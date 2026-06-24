@@ -6,11 +6,11 @@ class HotelBase(BaseModel):
     location: str = Field(min_length=1, max_length=100)
 
 
-class HotelAdd(HotelBase):
+class HotelCreate(HotelBase):
     pass
 
 
-class HotelPatch(BaseModel):
+class HotelUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=100)
     location: str | None = Field(default=None, min_length=1, max_length=100)
 
