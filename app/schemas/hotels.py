@@ -1,0 +1,39 @@
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class HotelBase(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    location: str = Field(min_length=1, max_length=100)
+
+
+class HotelAdd(HotelBase):
+    pass
+
+
+class HotelPatch(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=100)
+    location: str | None = Field(default=None, min_length=1, max_length=100)
+
+
+class HotelRead(HotelBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+hotel_create_examples = {
+    "tallinn": {
+        "summary": "Tallinn hotel",
+        "value": {
+            "name": "Nordic Hotel Forum",
+            "location": "Tallinn",
+        },
+    },
+    "dubai": {
+        "summary": "Dubai hotel",
+        "value": {
+            "name": "Burj Al Arab",
+            "location": "Dubai",
+        },
+    },
+}
