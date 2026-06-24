@@ -1,10 +1,11 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncIterator
+from typing import Annotated
 
 from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+
 from app.config import settings
-from typing import Annotated
 
 
 class Base(DeclarativeBase):
@@ -12,11 +13,11 @@ class Base(DeclarativeBase):
 
 
 engine = create_async_engine(settings.database_url, echo=True)
-SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
+session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
 
-async def get_session() -> AsyncGenerator[AsyncSession | None]:
-    async with SessionLocal() as session:
+async def get_session() -> AsyncIterator[AsyncSession]:
+    async with session_factory() as session:
         yield session
 
 
