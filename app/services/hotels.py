@@ -13,8 +13,16 @@ class HotelService:
             raise HotelNotFoundException
         return hotel
 
-    async def list_hotels(self):
-        return await self.db.hotels.list()
+    async def list_hotels(
+        self,
+        name: str | None = None,
+        location: str | None = None,
+        limit: int = 10,
+        offset: int = 0,
+    ):
+        return await self.db.hotels.list(
+            name=name, location=location, limit=limit, offset=offset
+        )
 
     async def add_hotel(self, hotel: HotelCreate):
         hotel = await self.db.hotels.add(hotel)

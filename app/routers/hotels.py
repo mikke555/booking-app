@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Response, status
+from fastapi import APIRouter, Body, Query, Response, status
 
 from app.dependencies import HotelServiceDep
 from app.schemas.hotels import (
@@ -14,8 +14,16 @@ router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
 
 @router.get("/", response_model=list[HotelRead])
-async def list_hotels(service: HotelServiceDep):
-    return await service.list_hotels()
+async def list_hotels(
+    service: HotelServiceDep,
+    name: Annotated[str | None, Query(min_length=1, max_length=100)] = None,
+    location: Annotated[str | None, Query(min_length=1, max_length=100)] = None,
+    limit: Annotated[int, Query(ge=1, le=100)] = 10,
+    offset: Annotated[int, Query(ge=0)] = 0,
+):
+    return await service.list_hotels(
+        name=name, location=location, limit=limit, offset=offset
+    )
 
 
 @router.post("/", response_model=HotelRead, status_code=status.HTTP_201_CREATED)

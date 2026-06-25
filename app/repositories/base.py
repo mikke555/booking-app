@@ -1,5 +1,3 @@
-from typing import Any
-
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -24,9 +22,18 @@ class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
         return self._to_schema(entity)
 
     async def list(
-        self, limit: int = 10, offset: int = 0, **filter_by: Any
+        self, *filters, limit: int = 10, offset: int = 0, **filter_by
     ) -> list[SchemaT]:
-        stmt = select(self.model).filter_by(**filter_by).limit(limit).offset(offset)
+        stmt = select(self.model)
+
+        if filter_by:
+            stmt = stmt.filter_by(**filter_by)
+
+        if filters:
+            stmt = stmt.where(*filters)
+
+        stmt = stmt.order_by(self.model.id).limit(limit).offset(offset)
+
         result = await self.session.execute(stmt)
         return [self._to_schema(row) for row in result.scalars().all()]
 
