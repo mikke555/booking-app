@@ -13,7 +13,7 @@ class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
         self.session = session
 
     def _to_schema(self, entity: ModelT) -> SchemaT:
-        return self.schema.model_validate(entity)
+        return self.schema.model_validate(entity, from_attributes=True)
 
     async def get_by_id(self, id: int) -> SchemaT | None:
         entity = await self.session.get(self.model, id)
