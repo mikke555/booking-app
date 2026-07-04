@@ -1,5 +1,6 @@
 from app.exceptions import HotelNotFoundException
 from app.schemas.hotels import HotelCreate, HotelUpdate
+from app.schemas.pagination import PaginationParams
 from app.utils.db_manager import DBManager
 
 
@@ -15,13 +16,16 @@ class HotelService:
 
     async def list_hotels(
         self,
+        pagination: PaginationParams,
+        *,
         name: str | None = None,
         location: str | None = None,
-        limit: int = 10,
-        offset: int = 0,
     ):
         return await self.db.hotels.list(
-            name=name, location=location, limit=limit, offset=offset
+            name=name,
+            location=location,
+            limit=pagination.limit,
+            offset=pagination.offset,
         )
 
     async def add_hotel(self, hotel: HotelCreate):

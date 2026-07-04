@@ -9,10 +9,11 @@ class HotelRepository(BaseRepository[Hotel, HotelRead]):
 
     async def list(
         self,
+        *,
         name: str | None = None,
         location: str | None = None,
-        limit: int = 10,
-        offset: int = 0,
+        limit: int,
+        offset: int,
     ) -> list[HotelRead]:
         filters = []
         if name is not None:

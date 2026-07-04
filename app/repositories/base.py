@@ -22,7 +22,7 @@ class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
         return self._to_schema(entity)
 
     async def list(
-        self, *filters, limit: int = 10, offset: int = 0, **filter_by
+        self, *filters, limit: int, offset: int, **filter_by
     ) -> list[SchemaT]:
         stmt = select(self.model)
 
