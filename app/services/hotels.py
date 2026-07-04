@@ -1,4 +1,4 @@
-from app.exceptions import HotelNotFoundException
+from app.exceptions import HotelNotFound
 from app.schemas.hotels import HotelCreate, HotelUpdate
 from app.schemas.pagination import PaginationParams
 from app.utils.db_manager import DBManager
@@ -11,7 +11,7 @@ class HotelService:
     async def get_hotel(self, id: int):
         hotel = await self.db.hotels.get_by_id(id)
         if hotel is None:
-            raise HotelNotFoundException
+            raise HotelNotFound
         return hotel
 
     async def list_hotels(
@@ -36,12 +36,12 @@ class HotelService:
     async def update_hotel(self, id: int, data: HotelUpdate):
         hotel = await self.db.hotels.update(id, data)
         if hotel is None:
-            raise HotelNotFoundException
+            raise HotelNotFound
         await self.db.commit()
         return hotel
 
     async def delete_hotel(self, id: int) -> None:
         deleted = await self.db.hotels.delete(id)
         if not deleted:
-            raise HotelNotFoundException
+            raise HotelNotFound
         await self.db.commit()

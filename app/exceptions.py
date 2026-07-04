@@ -3,10 +3,10 @@ class AppException(Exception):
     detail = "Application error"
 
 
-class ObjectNotFoundException(AppException):
+class ObjectNotFound(AppException):
     status_code = 404
     detail = "Object not found"
 
 
-class HotelNotFoundException(ObjectNotFoundException):
+class HotelNotFound(ObjectNotFound):
     detail = "Hotel not found"
