@@ -1,7 +1,14 @@
-from fastapi import APIRouter, Response, status
+from typing import Annotated
+
+from fastapi import APIRouter, Body, Response, status
 
 from app.dependencies import RoomServiceDep
-from app.schemas.rooms import RoomCreate, RoomRead, RoomUpdate
+from app.schemas.rooms import (
+    RoomCreate,
+    RoomRead,
+    RoomUpdate,
+    room_create_examples,
+)
 
 router = APIRouter(tags=["Rooms"])
 
@@ -16,7 +23,11 @@ async def list_by_hotel(hotel_id: int, service: RoomServiceDep):
     response_model=RoomRead,
     status_code=status.HTTP_201_CREATED,
 )
-async def add_room(hotel_id: int, payload: RoomCreate, service: RoomServiceDep):
+async def add_room(
+    hotel_id: int,
+    payload: Annotated[RoomCreate, Body(openapi_examples=room_create_examples)],
+    service: RoomServiceDep,
+):
     return await service.create_room(hotel_id, payload)
 
 

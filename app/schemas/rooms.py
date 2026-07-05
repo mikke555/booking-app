@@ -24,3 +24,25 @@ class RoomUpdate(BaseModel):
     description: str | None = None
     quantity: int | None = None
     price: int | None = None
+
+
+room_create_examples = {
+    "single": {
+        "summary": "Single room",
+        "value": {
+            "title": "Single Room",
+            "description": "Compact room with a single bed",
+            "quantity": 2,
+            "price": 100,
+        },
+    },
+    "double": {
+        "summary": "Double room",
+        "value": {
+            "title": "Double Room",
+            "description": "Room with a double bed and city view",
+            "quantity": 4,
+            "price": 250,
+        },
+    },
+}
