@@ -8,8 +8,8 @@ class HotelService:
     def __init__(self, db: DBManager):
         self.db = db
 
-    async def get_hotel(self, id: int):
-        hotel = await self.db.hotels.get_by_id(id)
+    async def get_hotel(self, hotel_id: int):
+        hotel = await self.db.hotels.get_by_id(hotel_id)
         if hotel is None:
             raise HotelNotFound
         return hotel
@@ -33,15 +33,15 @@ class HotelService:
         await self.db.commit()
         return hotel
 
-    async def update_hotel(self, id: int, data: HotelUpdate):
-        hotel = await self.db.hotels.update(id, data)
+    async def update_hotel(self, hotel_id: int, data: HotelUpdate):
+        hotel = await self.db.hotels.update(hotel_id, data)
         if hotel is None:
             raise HotelNotFound
         await self.db.commit()
         return hotel
 
-    async def delete_hotel(self, id: int) -> None:
-        deleted = await self.db.hotels.delete(id)
+    async def delete_hotel(self, hotel_id: int) -> None:
+        deleted = await self.db.hotels.delete(hotel_id)
         if not deleted:
             raise HotelNotFound
         await self.db.commit()

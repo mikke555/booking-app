@@ -1,9 +1,10 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
+
 from app.database import sessionDep
 
-router = APIRouter(tags=["meta"])
+router = APIRouter(tags=["Healtcheck"])
 
 
 @router.get("/health")
