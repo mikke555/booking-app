@@ -1,13 +1,10 @@
 from app.exceptions import HotelNotFound
 from app.schemas.hotels import HotelCreate, HotelUpdate
 from app.schemas.pagination import PaginationParams
-from app.utils.db_manager import DBManager
+from app.services.base import BaseService
 
 
-class HotelService:
-    def __init__(self, db: DBManager):
-        self.db = db
-
+class HotelService(BaseService):
     async def get_hotel(self, hotel_id: int):
         hotel = await self.db.hotels.get_by_id(hotel_id)
         if hotel is None:

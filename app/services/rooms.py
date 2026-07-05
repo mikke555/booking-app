@@ -1,12 +1,9 @@
 from app.exceptions import HotelNotFound, RoomNotFound
 from app.schemas.rooms import RoomCreate, RoomUpdate
-from app.utils.db_manager import DBManager
+from app.services.base import BaseService
 
 
-class RoomService:
-    def __init__(self, db: DBManager):
-        self.db = db
-
+class RoomService(BaseService):
     async def _check_hotel_exists(self, hotel_id: int):
         hotel = await self.db.hotels.get_by_id(hotel_id)
         if hotel is None:
