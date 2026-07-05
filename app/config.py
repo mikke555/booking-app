@@ -1,5 +1,5 @@
+from pydantic import PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import PostgresDsn
 
 
 class Settings(BaseSettings):
@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: int
     postgres_db: str
+
+    jwt_key: SecretStr
+    jwt_alg: str
+    jwt_exp: int
 
     @property
     def database_url(self) -> str:

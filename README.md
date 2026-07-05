@@ -86,3 +86,11 @@ Autofix formatting & check for linting errors:
 uv run ruff format
 uv run ruff check
 ```
+
+### JWT
+
+Generate 32 bytes secret key:
+
+```bash
+uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
