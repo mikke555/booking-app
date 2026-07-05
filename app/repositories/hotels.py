@@ -1,11 +1,9 @@
 from app.models.hotels import Hotel
 from app.repositories.base import BaseRepository
-from app.schemas.hotels import HotelRead
 
 
-class HotelRepository(BaseRepository[Hotel, HotelRead]):
+class HotelRepository(BaseRepository[Hotel]):
     model = Hotel
-    schema = HotelRead
 
     async def list(
         self,
@@ -14,7 +12,7 @@ class HotelRepository(BaseRepository[Hotel, HotelRead]):
         location: str | None = None,
         limit: int,
         offset: int,
-    ) -> list[HotelRead]:
+    ) -> list[Hotel]:
         filters = []
         if name is not None:
             filters.append(Hotel.name.ilike(f"%{name}%"))

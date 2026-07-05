@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class RoomBase(BaseModel):
@@ -15,6 +15,8 @@ class RoomCreate(RoomBase):
 class RoomRead(RoomBase):
     id: int
     hotel_id: int
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RoomUpdate(BaseModel):

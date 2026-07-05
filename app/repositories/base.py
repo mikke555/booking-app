@@ -1,38 +1,27 @@
-from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import Base
 
 
-class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
+class BaseRepository[ModelT: Base]:
     model: type[ModelT]
-    schema: type[SchemaT]
 
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    def _to_schema(self, entity: ModelT) -> SchemaT:
-        return self.schema.model_validate(entity, from_attributes=True)
-
-    async def get_by_id(self, id: int) -> SchemaT | None:
-        entity = await self.session.get(self.model, id)
-        if entity is None:
-            return None
-        return self._to_schema(entity)
+    async def get_by_id(self, id: int, *, for_update: bool = False) -> ModelT | None:
+        return await self.session.get(
+            self.model, id, with_for_update=for_update or None
+        )
 
     async def list(
-        self,
-        *filters,
-        limit: int | None = None,
-        offset: int | None = None,
-        **filter_by,
-    ) -> list[SchemaT]:
+        self, *filters, limit: int | None = None, offset: int | None = None, **filter_by
+    ) -> list[ModelT]:
         stmt = select(self.model)
 
         if filter_by:
             stmt = stmt.filter_by(**filter_by)
-
         if filters:
             stmt = stmt.where(*filters)
 
@@ -44,26 +33,19 @@ class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
             stmt = stmt.offset(offset)
 
         result = await self.session.execute(stmt)
-        return [self._to_schema(row) for row in result.scalars().all()]
+        return list(result.scalars().all())
 
-    async def add(self, data: BaseModel, **extra_fields) -> SchemaT:
-        entity = self.model(**data.model_dump(), **extra_fields)
+    async def add(self, **values) -> ModelT:
+        entity = self.model(**values)
         self.session.add(entity)
         await self.session.flush()
-        return self._to_schema(entity)
+        return entity
 
-    async def update(self, id: int, data: BaseModel) -> SchemaT | None:
-        entity = await self.session.get(self.model, id)
-        if entity is None:
-            return None
-        for key, value in data.model_dump(exclude_unset=True).items():
+    async def update(self, entity: ModelT, values: dict) -> ModelT:
+        for key, value in values.items():
             setattr(entity, key, value)
         await self.session.flush()
-        return self._to_schema(entity)
+        return entity
 
-    async def delete(self, id: int) -> bool:
-        entity = await self.session.get(self.model, id)
-        if entity is None:
-            return False
+    async def delete(self, entity: ModelT) -> None:
         await self.session.delete(entity)
-        return True
