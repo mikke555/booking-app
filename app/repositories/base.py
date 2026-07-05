@@ -22,7 +22,11 @@ class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
         return self._to_schema(entity)
 
     async def list(
-        self, *filters, limit: int, offset: int, **filter_by
+        self,
+        *filters,
+        limit: int | None = None,
+        offset: int | None = None,
+        **filter_by,
     ) -> list[SchemaT]:
         stmt = select(self.model)
 
@@ -32,13 +36,18 @@ class BaseRepository[ModelT: Base, SchemaT: BaseModel]:
         if filters:
             stmt = stmt.where(*filters)
 
-        stmt = stmt.order_by(self.model.id).limit(limit).offset(offset)
+        stmt = stmt.order_by(self.model.id)
+
+        if limit is not None:
+            stmt = stmt.limit(limit)
+        if offset is not None:
+            stmt = stmt.offset(offset)
 
         result = await self.session.execute(stmt)
         return [self._to_schema(row) for row in result.scalars().all()]
 
-    async def add(self, data: BaseModel) -> SchemaT:
-        entity = self.model(**data.model_dump())
+    async def add(self, data: BaseModel, **extra_fields) -> SchemaT:
+        entity = self.model(**data.model_dump(), **extra_fields)
         self.session.add(entity)
         await self.session.flush()
         return self._to_schema(entity)
