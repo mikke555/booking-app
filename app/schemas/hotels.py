@@ -11,8 +11,8 @@ class HotelCreate(HotelBase):
 
 
 class HotelUpdate(BaseModel):
-    name: str | None = Field(default=None, min_length=1, max_length=100)
-    location: str | None = Field(default=None, min_length=1, max_length=100)
+    name: str | None = Field(None, min_length=1, max_length=100)
+    location: str | None = Field(None, min_length=1, max_length=100)
 
 
 class HotelRead(HotelBase):

@@ -6,6 +6,7 @@ from fastapi import Depends
 from app.database import session_factory
 from app.schemas.pagination import PaginationParams
 from app.services.hotels import HotelService
+from app.services.rooms import RoomService
 from app.utils.db_manager import DBManager
 
 
@@ -25,3 +26,10 @@ def get_hotel_service(db: DBDep) -> HotelService:
 
 
 HotelServiceDep = Annotated[HotelService, Depends(get_hotel_service)]
+
+
+def get_room_service(db: DBDep) -> RoomService:
+    return RoomService(db)
+
+
+RoomServiceDep = Annotated[RoomService, Depends(get_room_service)]

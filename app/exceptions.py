@@ -10,3 +10,7 @@ class ObjectNotFound(AppException):
 
 class HotelNotFound(ObjectNotFound):
     detail = "Hotel not found"
+
+
+class RoomNotFound(ObjectNotFound):
+    detail = "Room not found"
