@@ -15,6 +15,11 @@ class BaseRepository[ModelT: Base]:
             self.model, id, with_for_update=for_update or None
         )
 
+    async def get_one_by_filter(self, **filter_by) -> ModelT | None:
+        stmt = select(self.model).filter_by(**filter_by)
+        result = await self.session.execute(stmt)
+        return result.scalar_one_or_none()
+
     async def list(
         self, *filters, limit: int | None = None, offset: int | None = None, **filter_by
     ) -> list[ModelT]:

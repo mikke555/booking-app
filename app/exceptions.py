@@ -17,7 +17,20 @@ class RoomNotFound(ObjectNotFound):
     detail = "Room not found"
 
 
-class InvalidToken(AppException):
+class UserAlreadyExists(AppException):
+    status_code = 409
+    detail = "User with this email already exists"
+
+
+class Unauthorized(AppException):
     status_code = 401
-    detail = "Could not validate credentials"
+    detail = "Unauthorized"
     headers = {"WWW-Authenticate": "Bearer"}
+
+
+class InvalidToken(Unauthorized):
+    detail = "Could not validate credentials"
+
+
+class InvalidCredentials(Unauthorized):
+    detail = "Invalid email or password"
