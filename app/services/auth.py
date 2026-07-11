@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from app.exceptions import InvalidCredentials, UserAlreadyExists
+from app.exceptions import InvalidCredentialsError, UserAlreadyExistsError
 from app.models.users import User
 from app.schemas.auth import AccessToken
 from app.schemas.users import UserCreate
@@ -24,16 +24,16 @@ class AuthService(BaseService):
             return user
 
         except IntegrityError:
-            raise UserAlreadyExists
+            raise UserAlreadyExistsError
 
     async def login(self, email: str, password: str) -> AccessToken:
         user = await self.db.users.get_one_by_filter(email=email.lower())
 
         if user is None:
             verify_password(password, DUMMY_HASH)
-            raise InvalidCredentials
+            raise InvalidCredentialsError
 
         if not verify_password(password, user.hashed_password):
-            raise InvalidCredentials
+            raise InvalidCredentialsError
 
         return AccessToken(access_token=create_access_token(user.id))

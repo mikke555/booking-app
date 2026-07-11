@@ -4,7 +4,7 @@ import jwt
 from pwdlib import PasswordHash
 
 from app.config import settings
-from app.exceptions import InvalidToken
+from app.exceptions import InvalidTokenError
 
 password_hash = PasswordHash.recommended()
 
@@ -43,4 +43,4 @@ def decode_access_token(token: str) -> int:
         return int(payload["sub"])
 
     except jwt.InvalidTokenError, ValueError:
-        raise InvalidToken
+        raise InvalidTokenError

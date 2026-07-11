@@ -5,7 +5,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from app.database import session_factory
-from app.exceptions import InvalidToken
+from app.exceptions import InvalidTokenError
 from app.models.users import User
 from app.schemas.pagination import PaginationParams
 from app.services.auth import AuthService
@@ -63,7 +63,7 @@ async def get_current_user(
     user_id = decode_access_token(token)
     user = await db.users.get_by_id(user_id)
     if user is None:
-        raise InvalidToken
+        raise InvalidTokenError
     return user
 
 

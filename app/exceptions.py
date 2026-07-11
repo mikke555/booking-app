@@ -4,33 +4,33 @@ class AppException(Exception):
     headers: dict[str, str] | None = None
 
 
-class ObjectNotFound(AppException):
+class ObjectNotFoundError(AppException):
     status_code = 404
     detail = "Object not found"
 
 
-class HotelNotFound(ObjectNotFound):
+class HotelNotFoundError(ObjectNotFoundError):
     detail = "Hotel not found"
 
 
-class RoomNotFound(ObjectNotFound):
+class RoomNotFoundError(ObjectNotFoundError):
     detail = "Room not found"
 
 
-class UserAlreadyExists(AppException):
+class UserAlreadyExistsError(AppException):
     status_code = 409
     detail = "User with this email already exists"
 
 
-class Unauthorized(AppException):
+class UnauthorizedError(AppException):
     status_code = 401
     detail = "Unauthorized"
     headers = {"WWW-Authenticate": "Bearer"}
 
 
-class InvalidToken(Unauthorized):
+class InvalidTokenError(UnauthorizedError):
     detail = "Could not validate credentials"
 
 
-class InvalidCredentials(Unauthorized):
+class InvalidCredentialsError(UnauthorizedError):
     detail = "Invalid email or password"

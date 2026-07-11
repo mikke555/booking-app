@@ -1,4 +1,4 @@
-from app.exceptions import HotelNotFound
+from app.exceptions import HotelNotFoundError
 from app.schemas.hotels import HotelCreate, HotelUpdate
 from app.schemas.pagination import PaginationParams
 from app.services.base import BaseService
@@ -27,7 +27,7 @@ class HotelService(BaseService):
     async def get_hotel(self, hotel_id: int):
         hotel = await self.db.hotels.get_by_id(hotel_id)
         if hotel is None:
-            raise HotelNotFound
+            raise HotelNotFoundError
         return hotel
 
     async def update_hotel(self, hotel_id: int, data: HotelUpdate):

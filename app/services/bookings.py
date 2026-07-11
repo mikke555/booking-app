@@ -1,4 +1,4 @@
-from app.exceptions import RoomNotFound
+from app.exceptions import RoomNotFoundError
 from app.schemas.bookings import BookingCreate
 from app.services.base import BaseService
 
@@ -13,7 +13,7 @@ class BookingService(BaseService):
     async def create_booking(self, data: BookingCreate, *, user_id: int):
         room = await self.db.rooms.get_by_id(data.room_id)
         if room is None:
-            raise RoomNotFound
+            raise RoomNotFoundError
 
         booking = await self.db.bookings.add(
             user_id=user_id, price=room.price, **data.model_dump()

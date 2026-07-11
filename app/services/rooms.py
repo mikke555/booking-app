@@ -1,4 +1,4 @@
-from app.exceptions import HotelNotFound, RoomNotFound
+from app.exceptions import HotelNotFoundError, RoomNotFoundError
 from app.schemas.rooms import RoomCreate, RoomUpdate
 from app.services.base import BaseService
 
@@ -6,7 +6,7 @@ from app.services.base import BaseService
 class RoomService(BaseService):
     async def _check_hotel_exists(self, hotel_id: int):
         if await self.db.hotels.get_by_id(hotel_id) is None:
-            raise HotelNotFound
+            raise HotelNotFoundError
 
     async def list_rooms_by_hotel(self, hotel_id: int):
         await self._check_hotel_exists(hotel_id)
@@ -22,7 +22,7 @@ class RoomService(BaseService):
     async def get_room(self, room_id: int):
         room = await self.db.rooms.get_by_id(room_id)
         if room is None:
-            raise RoomNotFound
+            raise RoomNotFoundError
         return room
 
     async def update_room(self, room_id: int, data: RoomUpdate):
