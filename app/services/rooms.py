@@ -12,7 +12,7 @@ class RoomService(BaseService):
         await self._check_hotel_exists(hotel_id)
         return await self.db.rooms.list(hotel_id=hotel_id)
 
-    async def create_room(self, hotel_id: int, data: RoomCreate):
+    async def create_room(self, data: RoomCreate, *, hotel_id: int):
         await self._check_hotel_exists(hotel_id)
 
         room = await self.db.rooms.add(**data.model_dump(), hotel_id=hotel_id)

@@ -28,7 +28,7 @@ async def add_room(
     payload: Annotated[RoomCreate, Body(openapi_examples=room_create_examples)],
     service: RoomServiceDep,
 ):
-    return await service.create_room(hotel_id, payload)
+    return await service.create_room(payload, hotel_id=hotel_id)
 
 
 @router.get("/rooms/{room_id}", response_model=RoomRead)
