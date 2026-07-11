@@ -9,6 +9,7 @@ from app.exceptions import InvalidToken
 from app.models.users import User
 from app.schemas.pagination import PaginationParams
 from app.services.auth import AuthService
+from app.services.bookings import BookingService
 from app.services.hotels import HotelService
 from app.services.rooms import RoomService
 from app.utils.db_manager import DBManager
@@ -47,6 +48,13 @@ def get_auth_service(db: DBDep) -> AuthService:
 
 
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
+
+
+def get_booking_service(db: DBDep) -> BookingService:
+    return BookingService(db)
+
+
+BookingServiceDep = Annotated[BookingService, Depends(get_booking_service)]
 
 
 async def get_current_user(
