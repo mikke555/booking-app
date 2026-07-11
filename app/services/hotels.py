@@ -1,4 +1,5 @@
 from app.exceptions import HotelNotFoundError
+from app.models.hotels import Hotel
 from app.schemas.hotels import HotelCreate, HotelUpdate
 from app.schemas.pagination import PaginationParams
 from app.services.base import BaseService
@@ -11,7 +12,7 @@ class HotelService(BaseService):
         *,
         name: str | None = None,
         location: str | None = None,
-    ):
+    ) -> list[Hotel]:
         return await self.db.hotels.list(
             name=name,
             location=location,
@@ -19,18 +20,18 @@ class HotelService(BaseService):
             offset=pagination.offset,
         )
 
-    async def add_hotel(self, data: HotelCreate):
+    async def add_hotel(self, data: HotelCreate) -> Hotel:
         hotel = await self.db.hotels.add(**data.model_dump())
         await self.db.commit()
         return hotel
 
-    async def get_hotel(self, hotel_id: int):
+    async def get_hotel(self, hotel_id: int) -> Hotel:
         hotel = await self.db.hotels.get_by_id(hotel_id)
         if hotel is None:
             raise HotelNotFoundError
         return hotel
 
-    async def update_hotel(self, hotel_id: int, data: HotelUpdate):
+    async def update_hotel(self, hotel_id: int, data: HotelUpdate) -> Hotel:
         hotel = await self.get_hotel(hotel_id)
         await self.db.hotels.update(hotel, data.model_dump(exclude_unset=True))
         await self.db.commit()
