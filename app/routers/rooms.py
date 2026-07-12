@@ -14,7 +14,11 @@ from app.schemas.rooms import (
 router = APIRouter(tags=["Rooms"])
 
 
-@router.get("/hotels/{hotel_id}/rooms", response_model=list[RoomReadAvailable])
+@router.get(
+    "/hotels/{hotel_id}/rooms",
+    response_model=list[RoomReadAvailable],
+    description="List rooms of a specific hotel available for the requested dates, including the quantity left.",
+)
 async def list_by_hotel(hotel_id: int, dates: DateRangeDep, service: RoomServiceDep):
     return await service.list_available_by_hotel(hotel_id=hotel_id, dates=dates)
 

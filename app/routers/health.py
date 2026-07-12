@@ -7,7 +7,10 @@ from app.database import sessionDep
 router = APIRouter(tags=["Healthcheck"])
 
 
-@router.get("/health")
+@router.get(
+    "/health",
+    description="Check service status and database connectivity. Returns 503 if the database is unreachable.",
+)
 async def healthcheck(session: sessionDep):
     try:
         result = await session.execute(text("SELECT 1"))

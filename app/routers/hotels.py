@@ -13,7 +13,11 @@ from app.schemas.hotels import (
 router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
 
-@router.get("/", response_model=list[HotelRead])
+@router.get(
+    "/",
+    response_model=list[HotelRead],
+    description="List hotels with at least one room available for the requested dates.",
+)
 async def list_hotels(service: HotelServiceDep, filters: HotelFilterDep):
     return await service.list_hotels(filters)
 
