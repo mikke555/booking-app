@@ -6,9 +6,11 @@ from app.services.base import BaseService
 
 class HotelService(BaseService):
     async def list_hotels(self, filters: HotelFilterParams) -> list[Hotel]:
-        return await self.db.hotels.list(
+        return await self.db.hotels.list_available(
             name=filters.name,
             location=filters.location,
+            date_from=filters.date_from,
+            date_to=filters.date_to,
             limit=filters.limit,
             offset=filters.offset,
         )
