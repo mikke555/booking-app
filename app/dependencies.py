@@ -8,7 +8,7 @@ from app.database import session_factory
 from app.exceptions import InvalidTokenError
 from app.models.users import User
 from app.schemas.filters import DateRangeParams
-from app.schemas.pagination import PaginationParams
+from app.schemas.hotels import HotelFilterParams
 from app.services.auth import AuthService
 from app.services.bookings import BookingService
 from app.services.hotels import HotelService
@@ -19,8 +19,8 @@ from app.utils.security import decode_access_token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
-PaginationDep = Annotated[PaginationParams, Depends()]
 DateRangeDep = Annotated[DateRangeParams, Query()]
+HotelFilterDep = Annotated[HotelFilterParams, Query()]
 
 
 async def get_db_manager() -> AsyncIterator[DBManager]:

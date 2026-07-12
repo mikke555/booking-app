@@ -1,23 +1,16 @@
 from app.exceptions import HotelNotFoundError
 from app.models.hotels import Hotel
-from app.schemas.hotels import HotelCreate, HotelUpdate
-from app.schemas.pagination import PaginationParams
+from app.schemas.hotels import HotelCreate, HotelFilterParams, HotelUpdate
 from app.services.base import BaseService
 
 
 class HotelService(BaseService):
-    async def list_hotels(
-        self,
-        pagination: PaginationParams,
-        *,
-        name: str | None = None,
-        location: str | None = None,
-    ) -> list[Hotel]:
+    async def list_hotels(self, filters: HotelFilterParams) -> list[Hotel]:
         return await self.db.hotels.list(
-            name=name,
-            location=location,
-            limit=pagination.limit,
-            offset=pagination.offset,
+            name=filters.name,
+            location=filters.location,
+            limit=filters.limit,
+            offset=filters.offset,
         )
 
     async def add_hotel(self, data: HotelCreate) -> Hotel:

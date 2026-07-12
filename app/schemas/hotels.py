@@ -1,4 +1,12 @@
 from pydantic import BaseModel, ConfigDict, Field
+from pydantic.json_schema import SkipJsonSchema
+
+from app.schemas.filters import DateRangeFilter, PaginationFilter
+
+
+class HotelFilterParams(BaseModel, PaginationFilter, DateRangeFilter):
+    name: str | SkipJsonSchema[None] = Field(None, min_length=1, max_length=100)
+    location: str | SkipJsonSchema[None] = Field(None, min_length=1, max_length=100)
 
 
 class HotelBase(BaseModel):

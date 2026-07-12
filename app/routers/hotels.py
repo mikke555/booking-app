@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Query, Response, status
+from fastapi import APIRouter, Body, Response, status
 
-from app.dependencies import HotelServiceDep, PaginationDep
+from app.dependencies import HotelFilterDep, HotelServiceDep
 from app.schemas.hotels import (
     HotelCreate,
     HotelRead,
@@ -14,13 +14,8 @@ router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
 
 @router.get("/", response_model=list[HotelRead])
-async def list_hotels(
-    pagination: PaginationDep,
-    service: HotelServiceDep,
-    name: Annotated[str | None, Query(min_length=1, max_length=100)] = None,
-    location: Annotated[str | None, Query(min_length=1, max_length=100)] = None,
-):
-    return await service.list_hotels(pagination, name=name, location=location)
+async def list_hotels(service: HotelServiceDep, filters: HotelFilterDep):
+    return await service.list_hotels(filters)
 
 
 @router.post("/", response_model=HotelRead, status_code=status.HTTP_201_CREATED)
