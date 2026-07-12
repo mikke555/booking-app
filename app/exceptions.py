@@ -17,6 +17,11 @@ class RoomNotFoundError(ObjectNotFoundError):
     detail = "Room not found"
 
 
+class RoomNotAvailableError(AppException):
+    status_code = 409
+    detail = "Room is not available for the requested dates"
+
+
 class UserAlreadyExistsError(AppException):
     status_code = 409
     detail = "User with this email already exists"
