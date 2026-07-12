@@ -2,10 +2,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, Response, status
 
-from app.dependencies import RoomServiceDep
+from app.dependencies import DateRangeDep, RoomServiceDep
 from app.schemas.rooms import (
     RoomCreate,
     RoomRead,
+    RoomReadAvailable,
     RoomUpdate,
     room_create_examples,
 )
@@ -13,9 +14,9 @@ from app.schemas.rooms import (
 router = APIRouter(tags=["Rooms"])
 
 
-@router.get("/hotels/{hotel_id}/rooms", response_model=list[RoomRead])
-async def list_by_hotel(hotel_id: int, service: RoomServiceDep):
-    return await service.list_rooms_by_hotel(hotel_id=hotel_id)
+@router.get("/hotels/{hotel_id}/rooms", response_model=list[RoomReadAvailable])
+async def list_by_hotel(hotel_id: int, dates: DateRangeDep, service: RoomServiceDep):
+    return await service.list_available_by_hotel(hotel_id=hotel_id, dates=dates)
 
 
 @router.post(

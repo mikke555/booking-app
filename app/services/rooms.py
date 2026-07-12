@@ -1,5 +1,10 @@
+from typing import Any
+
+from sqlalchemy import Row
+
 from app.exceptions import HotelNotFoundError, RoomNotFoundError
 from app.models.rooms import Room
+from app.schemas.filters import DateRangeParams
 from app.schemas.rooms import RoomCreate, RoomUpdate
 from app.services.base import BaseService
 
@@ -9,9 +14,17 @@ class RoomService(BaseService):
         if await self.db.hotels.get_by_id(hotel_id) is None:
             raise HotelNotFoundError
 
-    async def list_rooms_by_hotel(self, hotel_id: int) -> list[Room]:
+    async def list_available_by_hotel(
+        self,
+        hotel_id: int,
+        dates: DateRangeParams,
+    ) -> list[Row[Any]]:
         await self._check_hotel_exists(hotel_id)
-        return await self.db.rooms.list(hotel_id=hotel_id)
+        return await self.db.rooms.list_available(
+            hotel_id=hotel_id,
+            date_from=dates.date_from,
+            date_to=dates.date_to,
+        )
 
     async def create_room(self, data: RoomCreate, *, hotel_id: int) -> Room:
         await self._check_hotel_exists(hotel_id)

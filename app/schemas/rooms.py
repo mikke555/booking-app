@@ -19,6 +19,10 @@ class RoomRead(RoomBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class RoomReadAvailable(RoomRead):
+    quantity_left: int
+
+
 class RoomUpdate(BaseModel):
     title: str | None = Field(None, min_length=1, max_length=120)
     description: str | None = None
@@ -41,7 +45,7 @@ room_create_examples = {
         "value": {
             "title": "Double Room",
             "description": "Room with a double bed and city view",
-            "quantity": 4,
+            "quantity": 1,
             "price": 250,
         },
     },

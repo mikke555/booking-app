@@ -1,12 +1,13 @@
 from collections.abc import AsyncIterator
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, Query
 from fastapi.security import OAuth2PasswordBearer
 
 from app.database import session_factory
 from app.exceptions import InvalidTokenError
 from app.models.users import User
+from app.schemas.filters import DateRangeParams
 from app.schemas.pagination import PaginationParams
 from app.services.auth import AuthService
 from app.services.bookings import BookingService
@@ -19,6 +20,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 PaginationDep = Annotated[PaginationParams, Depends()]
+DateRangeDep = Annotated[DateRangeParams, Query()]
 
 
 async def get_db_manager() -> AsyncIterator[DBManager]:
