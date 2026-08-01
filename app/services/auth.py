@@ -23,8 +23,8 @@ class AuthService(BaseService):
             await self.db.commit()
             return user
 
-        except IntegrityError:
-            raise UserAlreadyExistsError
+        except IntegrityError as e:
+            raise UserAlreadyExistsError from e
 
     async def login(self, email: str, password: str) -> AccessToken:
         user = await self.db.users.get_one_by_filter(email=email.lower())
