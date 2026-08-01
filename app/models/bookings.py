@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, func
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -18,6 +18,7 @@ class Booking(Base):
             "price >= 0",
             name="ck_bookings_price_non_negative",
         ),
+        Index("ix_bookings_room_dates", "room_id", "date_from", "date_to"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
