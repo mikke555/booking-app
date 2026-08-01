@@ -1,96 +1,62 @@
-# FastAPI-starter
+# Hotel Booking API
 
-A FastAPI starter template with SQLAlchemy, Alembic migrations, and a PostgreSQL database running in Docker.
+REST API for hotel booking: availability search by date range, concurrency-safe booking creation, JWT authentication.
+
+Built with FastAPI, SQLAlchemy 2, PostgreSQL, and Alembic.
 
 ## Requirements
 
-- Install [UV](https://docs.astral.sh/uv/#installation)
+- [uv](https://docs.astral.sh/uv/#installation)
 - Python 3.14, installed with `uv python install 3.14`
-- Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
 ## Setup guide
 
 ```bash
-uv sync
-mv .env.example .env
-docker compose up -d
+uv sync                        # install dependencies
+cp .env.example .env           # config — see below
+docker compose up -d           # start PostgreSQL
+uv run alembic upgrade head    # apply migrations
 ```
 
-Create your own models in `./app/models`, then migrate:
+Generate a secret key and paste it into `JWT_KEY` in `.env`:
 
 ```bash
-uv run alembic revision --autogenerate -m "init"
-uv run alembic upgrade head
+uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Finally, run the app with UV:
+Run the app:
 
 ```bash
 uv run fastapi dev
 ```
 
-## Reference / cheatsheet
+Interactive docs: http://localhost:8000/docs
 
-### Docker
+## Development
 
-Start the PostgreSQL container in detached mode:
-
-```bash
-docker compose up -d
-```
-
-Check connection:
-
-```bash
-docker compose exec postgres pg_isready
-```
-
-Stop and remove the container, including volumes:
-
-```bash
-docker compose down -v
-```
-
-### Alembic
-
-Create Alembic migration environment with async template (one-time setup, already done):
-
-```bash
-uv run alembic init -t async migrations
-```
-
-Generate a migration from model changes, then apply it:
-
-```bash
-uv run alembic revision --autogenerate -m "init"
-uv run alembic upgrade head
-```
-
-Go down one revision:
-
-```bash
-uv run alembic downgrade -1
-```
-
-Downgrade back to nothing:
-
-```bash
-uv run alembic downgrade base
-```
-
-### Ruff
-
-Autofix formatting & check for linting errors:
+Format and lint:
 
 ```bash
 uv run ruff format
 uv run ruff check
 ```
 
-### JWT
-
-Generate 32 bytes secret key:
+Generate a migration from model changes, apply it, revert one revision, or roll everything back:
 
 ```bash
-uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
+uv run alembic revision --autogenerate -m "msg"
+uv run alembic upgrade head
+
+uv run alembic downgrade -1
+uv run alembic downgrade base
+```
+
+Check the database container, open a psql shell, or stop it and wipe the data:
+
+```bash
+docker compose exec db pg_isready
+docker compose exec db psql -U postgres -d booking
+
+docker compose down -v
 ```
