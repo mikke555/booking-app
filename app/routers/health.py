@@ -2,7 +2,7 @@ from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
-from app.database import sessionDep
+from app.database import SessionDep
 
 router = APIRouter(tags=["Healthcheck"])
 
@@ -11,10 +11,10 @@ router = APIRouter(tags=["Healthcheck"])
     "/health",
     description="Check service status and database connectivity. Returns 503 if the database is unreachable.",
 )
-async def healthcheck(session: sessionDep):
+async def healthcheck(session: SessionDep):
     try:
-        result = await session.execute(text("SELECT 1"))
-        return {"status": "healthy", "db_result": result.scalar()}
+        await session.execute(text("SELECT 1"))
+        return {"status": "healthy"}
     except Exception:
         return JSONResponse(
             {"status": "unhealthy"},
