@@ -1,7 +1,12 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import CheckConstraint, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+
+if TYPE_CHECKING:
+    from app.models.amenities import Amenity
 
 
 class Room(Base):
@@ -19,4 +24,8 @@ class Room(Base):
 
     hotel_id: Mapped[int] = mapped_column(
         ForeignKey("hotels.id", ondelete="CASCADE"), index=True
+    )
+
+    amenities: Mapped[list["Amenity"]] = relationship(
+        secondary="room_amenities", back_populates="rooms"
     )
