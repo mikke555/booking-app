@@ -6,7 +6,7 @@ from app.schemas.amenities import AmenityRead
 class RoomBase(BaseModel):
     title: str = Field(min_length=1, max_length=120)
     description: str | None = None
-    quantity: int = Field(ge=0)
+    quantity: int = Field(ge=1)
     price: int = Field(ge=1)
 
 
@@ -36,8 +36,8 @@ class RoomReadAvailable(RoomReadBase):
 class RoomUpdate(BaseModel):
     title: str | None = Field(None, min_length=1, max_length=120)
     description: str | None = None
-    quantity: int | None = None
-    price: int | None = None
+    quantity: int | None = Field(None, ge=1)
+    price: int | None = Field(None, ge=1)
     amenities_ids: list[int] | None = None
 
 
