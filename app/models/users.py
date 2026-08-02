@@ -11,3 +11,4 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(254), unique=True)
     hashed_password: Mapped[str]
     is_active: Mapped[bool] = mapped_column(default=True)
+    is_admin: Mapped[bool] = mapped_column(default=False)
