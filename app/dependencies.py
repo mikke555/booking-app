@@ -9,6 +9,7 @@ from app.exceptions import InvalidTokenError
 from app.models.users import User
 from app.schemas.filters import DateRangeParams
 from app.schemas.hotels import HotelFilterParams
+from app.services.amenities import AmenityService
 from app.services.auth import AuthService
 from app.services.bookings import BookingService
 from app.services.hotels import HotelService
@@ -57,6 +58,13 @@ def get_booking_service(db: DBDep) -> BookingService:
 
 
 BookingServiceDep = Annotated[BookingService, Depends(get_booking_service)]
+
+
+def get_amenity_service(db: DBDep) -> AmenityService:
+    return AmenityService(db)
+
+
+AmenityServiceDep = Annotated[AmenityService, Depends(get_amenity_service)]
 
 
 async def get_current_user(

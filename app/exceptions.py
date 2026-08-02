@@ -17,6 +17,10 @@ class RoomNotFoundError(ObjectNotFoundError):
     detail = "Room not found"
 
 
+class AmenityNotFoundError(ObjectNotFoundError):
+    detail = "Amenity not found"
+
+
 class ObjectAlreadyExistsError(AppException):
     status_code = 409
     detail = "Object already exists"
@@ -28,6 +32,10 @@ class HotelAlreadyExistsError(ObjectAlreadyExistsError):
 
 class UserAlreadyExistsError(ObjectAlreadyExistsError):
     detail = "User with this email already exists"
+
+
+class AmenityAlreadyExistsError(ObjectAlreadyExistsError):
+    detail = "Amenity with this name already exists"
 
 
 class RoomNotAvailableError(AppException):
