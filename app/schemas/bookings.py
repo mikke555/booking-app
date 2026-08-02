@@ -9,12 +9,15 @@ class BookingBase(BaseModel):
     date_to: date
 
 
-class BookingRead(BookingBase):
+class BookingRead(BaseModel):
     id: int
     user_id: int
+    room_id: int
+    date_from: date
+    date_to: date
     price: int
-    created_at: datetime
     total_cost: int
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 
