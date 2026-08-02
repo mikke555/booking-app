@@ -14,15 +14,22 @@ class RoomCreate(RoomBase):
     amenities_ids: list[int] = []
 
 
-class RoomRead(RoomBase):
+class RoomReadBase(BaseModel):
     id: int
     hotel_id: int
+    title: str
+    description: str | None
+    price: int
     amenities: list[AmenityRead] = []
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class RoomReadAvailable(RoomRead):
+class RoomRead(RoomReadBase):
+    quantity: int
+
+
+class RoomReadAvailable(RoomReadBase):
     quantity_left: int
 
 
