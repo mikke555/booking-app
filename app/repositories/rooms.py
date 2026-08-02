@@ -17,7 +17,7 @@ class RoomRepository(BaseRepository[Room]):
 
     async def list_available(
         self, *, hotel_id: int, date_from: date, date_to: date
-    ) -> list[Room]:
+    ) -> list[tuple[Room, int]]:
         stmt = (
             available_rooms_stmt(date_from, date_to, hotel_id=hotel_id)
             .options(selectinload(Room.amenities))
@@ -25,9 +25,4 @@ class RoomRepository(BaseRepository[Room]):
         )
 
         result = await self.session.execute(stmt)
-
-        rooms = []
-        for room, quantity_left in result.all():
-            room.quantity_left = quantity_left
-            rooms.append(room)
-        return rooms
+        return list(result.tuples().all())

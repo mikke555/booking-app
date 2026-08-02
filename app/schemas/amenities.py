@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AmenityBase(BaseModel):
@@ -11,3 +11,5 @@ class AmenityCreate(AmenityBase):
 
 class AmenityRead(AmenityBase):
     id: int
+
+    model_config = ConfigDict(from_attributes=True)
