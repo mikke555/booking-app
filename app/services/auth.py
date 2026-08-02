@@ -1,6 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 
-from app.exceptions import InvalidCredentialsError, UserAlreadyExistsError
+from app.exceptions import (
+    InvalidCredentialsError,
+    UserAlreadyExistsError,
+    UserDeactivatedError,
+)
 from app.models.users import User
 from app.schemas.auth import AccessToken
 from app.schemas.users import UserCreate
@@ -35,5 +39,8 @@ class AuthService(BaseService):
 
         if not verify_password(password, user.hashed_password):
             raise InvalidCredentialsError
+
+        if not user.is_active:
+            raise UserDeactivatedError
 
         return AccessToken(access_token=create_access_token(user.id))

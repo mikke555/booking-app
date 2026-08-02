@@ -6,6 +6,10 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=8, max_length=64)
 
 
+class UserSetActive(BaseModel):
+    is_active: bool
+
+
 class UserRead(BaseModel):
     id: int
     email: EmailStr

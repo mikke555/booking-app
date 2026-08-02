@@ -21,6 +21,10 @@ class AmenityNotFoundError(ObjectNotFoundError):
     detail = "Amenity not found"
 
 
+class UserNotFoundError(ObjectNotFoundError):
+    detail = "User not found"
+
+
 class ObjectAlreadyExistsError(AppException):
     status_code = 409
     detail = "Object already exists"
@@ -52,6 +56,11 @@ class UnauthorizedError(AppException):
 class ForbiddenError(AppException):
     status_code = 403
     detail = "Admin privileges required"
+
+
+class UserDeactivatedError(AppException):
+    status_code = 403
+    detail = "Account is deactivated"
 
 
 class InvalidTokenError(UnauthorizedError):

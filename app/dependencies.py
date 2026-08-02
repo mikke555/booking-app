@@ -5,7 +5,7 @@ from fastapi import Depends, Query
 from fastapi.security import OAuth2PasswordBearer
 
 from app.database import session_factory
-from app.exceptions import ForbiddenError, InvalidTokenError
+from app.exceptions import ForbiddenError, InvalidTokenError, UserDeactivatedError
 from app.models.users import User
 from app.schemas.filters import DateRangeParams
 from app.schemas.hotels import HotelFilterParams
@@ -14,6 +14,7 @@ from app.services.auth import AuthService
 from app.services.bookings import BookingService
 from app.services.hotels import HotelService
 from app.services.rooms import RoomService
+from app.services.users import UserService
 from app.utils.db_manager import DBManager
 from app.utils.security import decode_access_token
 
@@ -67,6 +68,13 @@ def get_amenity_service(db: DBDep) -> AmenityService:
 AmenityServiceDep = Annotated[AmenityService, Depends(get_amenity_service)]
 
 
+def get_user_service(db: DBDep) -> UserService:
+    return UserService(db)
+
+
+UserServiceDep = Annotated[UserService, Depends(get_user_service)]
+
+
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)], db: DBDep
 ) -> User:
@@ -74,6 +82,8 @@ async def get_current_user(
     user = await db.users.get_by_id(user_id)
     if user is None:
         raise InvalidTokenError
+    if not user.is_active:
+        raise UserDeactivatedError
     return user
 
 
