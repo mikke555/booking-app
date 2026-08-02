@@ -1,5 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.amenities import AmenityRead
+
 
 class RoomBase(BaseModel):
     title: str = Field(min_length=1, max_length=120)
@@ -9,12 +11,13 @@ class RoomBase(BaseModel):
 
 
 class RoomCreate(RoomBase):
-    pass
+    amenities_ids: list[int] = []
 
 
 class RoomRead(RoomBase):
     id: int
     hotel_id: int
+    amenities: list[AmenityRead] = []
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -28,6 +31,7 @@ class RoomUpdate(BaseModel):
     description: str | None = None
     quantity: int | None = None
     price: int | None = None
+    amenities_ids: list[int] | None = None
 
 
 room_create_examples = {

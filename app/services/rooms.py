@@ -1,8 +1,5 @@
-from typing import Any
-
-from sqlalchemy import Row
-
-from app.exceptions import HotelNotFoundError, RoomNotFoundError
+from app.exceptions import AmenityNotFoundError, HotelNotFoundError, RoomNotFoundError
+from app.models.amenities import Amenity
 from app.models.rooms import Room
 from app.schemas.filters import DateRangeParams
 from app.schemas.rooms import RoomCreate, RoomUpdate
@@ -18,7 +15,7 @@ class RoomService(BaseService):
         self,
         hotel_id: int,
         dates: DateRangeParams,
-    ) -> list[Row[Any]]:
+    ) -> list[Room]:
         await self._check_hotel_exists(hotel_id)
         return await self.db.rooms.list_available(
             hotel_id=hotel_id,
@@ -26,22 +23,41 @@ class RoomService(BaseService):
             date_to=dates.date_to,
         )
 
+    async def _resolve_amenities(self, amenities_ids: list[int]) -> list[Amenity]:
+        if not amenities_ids:
+            return []
+        amenities = await self.db.amenities.list(Amenity.id.in_(amenities_ids))
+        if len(amenities) != len(set(amenities_ids)):
+            raise AmenityNotFoundError
+        return amenities
+
     async def create_room(self, data: RoomCreate, *, hotel_id: int) -> Room:
         await self._check_hotel_exists(hotel_id)
 
-        room = await self.db.rooms.add(**data.model_dump(), hotel_id=hotel_id)
+        amenities = await self._resolve_amenities(data.amenities_ids)
+        room = await self.db.rooms.add(
+            **data.model_dump(exclude={"amenities_ids"}),
+            hotel_id=hotel_id,
+            amenities=amenities,
+        )
         await self.db.commit()
         return room
 
     async def get_room(self, room_id: int) -> Room:
-        room = await self.db.rooms.get_by_id(room_id)
+        room = await self.db.rooms.get_with_amenities(room_id)
         if room is None:
             raise RoomNotFoundError
         return room
 
     async def update_room(self, room_id: int, data: RoomUpdate) -> Room:
         room = await self.get_room(room_id)
-        await self.db.rooms.update(room, data.model_dump(exclude_unset=True))
+
+        values = data.model_dump(exclude_unset=True)
+        amenities_ids = values.pop("amenities_ids", None)
+        if amenities_ids is not None:
+            room.amenities = await self._resolve_amenities(amenities_ids)
+
+        await self.db.rooms.update(room, values)
         await self.db.commit()
         return room
 

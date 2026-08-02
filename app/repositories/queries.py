@@ -15,7 +15,7 @@ def available_rooms_stmt(
     booked_count = func.count(Booking.id)
 
     stmt = (
-        select(Room.__table__, (Room.quantity - booked_count).label("quantity_left"))
+        select(Room, (Room.quantity - booked_count).label("quantity_left"))
         .outerjoin(
             Booking,
             (Booking.room_id == Room.id)
