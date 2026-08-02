@@ -47,6 +47,16 @@ class RoomNotAvailableError(AppException):
     detail = "Room is not available for the requested dates"
 
 
+class RoomHasBookingsError(AppException):
+    status_code = 409
+    detail = "Cannot delete room with existing bookings"
+
+
+class HotelHasBookingsError(AppException):
+    status_code = 409
+    detail = "Cannot delete hotel with existing bookings"
+
+
 class UnauthorizedError(AppException):
     status_code = 401
     detail = "Unauthorized"

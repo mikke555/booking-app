@@ -1,6 +1,10 @@
 from sqlalchemy.exc import IntegrityError
 
-from app.exceptions import HotelAlreadyExistsError, HotelNotFoundError
+from app.exceptions import (
+    HotelAlreadyExistsError,
+    HotelHasBookingsError,
+    HotelNotFoundError,
+)
 from app.models.hotels import Hotel
 from app.schemas.hotels import HotelCreate, HotelFilterParams, HotelUpdate
 from app.services.base import BaseService
@@ -42,5 +46,8 @@ class HotelService(BaseService):
 
     async def delete_hotel(self, hotel_id: int) -> None:
         hotel = await self.get_hotel(hotel_id)
-        await self.db.hotels.delete(hotel)
-        await self.db.commit()
+        try:
+            await self.db.hotels.delete(hotel)
+            await self.db.commit()
+        except IntegrityError as e:
+            raise HotelHasBookingsError from e

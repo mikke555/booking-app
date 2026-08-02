@@ -1,4 +1,11 @@
-from app.exceptions import AmenityNotFoundError, HotelNotFoundError, RoomNotFoundError
+from sqlalchemy.exc import IntegrityError
+
+from app.exceptions import (
+    AmenityNotFoundError,
+    HotelNotFoundError,
+    RoomHasBookingsError,
+    RoomNotFoundError,
+)
 from app.models.amenities import Amenity
 from app.models.rooms import Room
 from app.schemas.filters import DateRangeParams
@@ -63,5 +70,8 @@ class RoomService(BaseService):
 
     async def delete_room(self, room_id: int) -> None:
         room = await self.get_room(room_id)
-        await self.db.rooms.delete(room)
-        await self.db.commit()
+        try:
+            await self.db.rooms.delete(room)
+            await self.db.commit()
+        except IntegrityError as e:
+            raise RoomHasBookingsError from e
