@@ -25,6 +25,8 @@ class BookingRead(BaseModel):
 class BookingCreate(BookingBase):
     @model_validator(mode="after")
     def check_dates(self) -> BookingCreate:
+        if self.date_from < date.today():
+            raise ValueError("date_from cannot be in the past")
         if self.date_from >= self.date_to:
             raise ValueError("date_from must be earlier than date_to")
         return self
