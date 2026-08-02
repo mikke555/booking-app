@@ -1,12 +1,16 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 
-from app.dependencies import BookingServiceDep, CurrentUserDep
+from app.dependencies import BookingServiceDep, CurrentUserDep, get_current_admin
 from app.schemas.bookings import BookingCreate, BookingRead
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
 
 
-@router.get("/", response_model=list[BookingRead])
+@router.get(
+    "/",
+    response_model=list[BookingRead],
+    dependencies=[Depends(get_current_admin)],
+)
 async def get_bookings(service: BookingServiceDep):
     return await service.list_bookings()
 

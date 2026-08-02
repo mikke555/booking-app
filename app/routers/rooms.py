@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Response, status
+from fastapi import APIRouter, Body, Depends, Response, status
 
-from app.dependencies import DateRangeDep, RoomServiceDep
+from app.dependencies import DateRangeDep, RoomServiceDep, get_current_admin
 from app.schemas.rooms import (
     RoomCreate,
     RoomRead,
@@ -27,6 +27,7 @@ async def list_by_hotel(hotel_id: int, dates: DateRangeDep, service: RoomService
     "/hotels/{hotel_id}/rooms",
     response_model=RoomRead,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_admin)],
 )
 async def add_room(
     hotel_id: int,
@@ -41,12 +42,20 @@ async def get_room(room_id: int, service: RoomServiceDep):
     return await service.get_room(room_id)
 
 
-@router.patch("/rooms/{room_id}", response_model=RoomRead)
+@router.patch(
+    "/rooms/{room_id}",
+    response_model=RoomRead,
+    dependencies=[Depends(get_current_admin)],
+)
 async def update_room(room_id: int, payload: RoomUpdate, service: RoomServiceDep):
     return await service.update_room(room_id, payload)
 
 
-@router.delete("/rooms/{room_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/rooms/{room_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_admin)],
+)
 async def delete_room(room_id: int, service: RoomServiceDep):
     await service.delete_room(room_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

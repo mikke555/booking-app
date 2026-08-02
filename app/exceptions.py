@@ -49,6 +49,11 @@ class UnauthorizedError(AppException):
     headers = {"WWW-Authenticate": "Bearer"}
 
 
+class ForbiddenError(AppException):
+    status_code = 403
+    detail = "Admin privileges required"
+
+
 class InvalidTokenError(UnauthorizedError):
     detail = "Could not validate credentials"
 

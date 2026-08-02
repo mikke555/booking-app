@@ -5,7 +5,7 @@ from fastapi import Depends, Query
 from fastapi.security import OAuth2PasswordBearer
 
 from app.database import session_factory
-from app.exceptions import InvalidTokenError
+from app.exceptions import ForbiddenError, InvalidTokenError
 from app.models.users import User
 from app.schemas.filters import DateRangeParams
 from app.schemas.hotels import HotelFilterParams
@@ -78,3 +78,9 @@ async def get_current_user(
 
 
 CurrentUserDep = Annotated[User, Depends(get_current_user)]
+
+
+async def get_current_admin(user: CurrentUserDep) -> User:
+    if not user.is_admin:
+        raise ForbiddenError
+    return user

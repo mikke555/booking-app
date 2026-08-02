@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Response, status
+from fastapi import APIRouter, Body, Depends, Response, status
 
-from app.dependencies import HotelFilterDep, HotelServiceDep
+from app.dependencies import HotelFilterDep, HotelServiceDep, get_current_admin
 from app.schemas.hotels import (
     HotelCreate,
     HotelRead,
@@ -22,7 +22,12 @@ async def list_hotels(service: HotelServiceDep, filters: HotelFilterDep):
     return await service.list_hotels(filters)
 
 
-@router.post("/", response_model=HotelRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=HotelRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_admin)],
+)
 async def create_hotel(
     payload: Annotated[HotelCreate, Body(openapi_examples=hotel_create_examples)],
     service: HotelServiceDep,
@@ -35,12 +40,20 @@ async def get_hotel(hotel_id: int, service: HotelServiceDep):
     return await service.get_hotel(hotel_id)
 
 
-@router.patch("/{hotel_id}", response_model=HotelRead)
+@router.patch(
+    "/{hotel_id}",
+    response_model=HotelRead,
+    dependencies=[Depends(get_current_admin)],
+)
 async def update_hotel(hotel_id: int, payload: HotelUpdate, service: HotelServiceDep):
     return await service.update_hotel(hotel_id, payload)
 
 
-@router.delete("/{hotel_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{hotel_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_admin)],
+)
 async def delete_hotel(hotel_id: int, service: HotelServiceDep):
     await service.delete_hotel(hotel_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
