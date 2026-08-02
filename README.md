@@ -25,6 +25,12 @@ Generate a secret key and paste it into `JWT_KEY` in `.env`:
 uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
+Seed the database with demo data:
+
+```bash
+uv run python -m scripts.seed
+```
+
 Run the app:
 
 ```bash
