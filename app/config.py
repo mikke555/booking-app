@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     jwt_alg: str
     jwt_exp: int
 
+    db_echo: bool = False
+
     @property
     def database_url(self) -> str:
         return PostgresDsn.build(
