@@ -30,3 +30,7 @@ def available_rooms_stmt(
         stmt = stmt.filter(Room.hotel_id == hotel_id)
 
     return stmt
+
+
+def available_hotel_ids_stmt(date_from: date, date_to: date) -> Select[Any]:
+    return available_rooms_stmt(date_from, date_to).with_only_columns(Room.hotel_id)

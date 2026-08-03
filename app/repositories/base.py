@@ -1,4 +1,6 @@
-from sqlalchemy import select
+from typing import Any
+
+from sqlalchemy import ColumnElement, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import Base
@@ -21,7 +23,12 @@ class BaseRepository[ModelT: Base]:
         return result.scalar_one_or_none()
 
     async def list(
-        self, *filters, limit: int | None = None, offset: int | None = None, **filter_by
+        self,
+        *filters,
+        limit: int | None = None,
+        offset: int | None = None,
+        order_by: ColumnElement[Any] | None = None,
+        **filter_by,
     ) -> list[ModelT]:
         stmt = select(self.model)
 
@@ -30,7 +37,7 @@ class BaseRepository[ModelT: Base]:
         if filters:
             stmt = stmt.where(*filters)
 
-        stmt = stmt.order_by(self.model.id)
+        stmt = stmt.order_by(order_by if order_by is not None else self.model.id)
 
         if limit is not None:
             stmt = stmt.limit(limit)
@@ -39,6 +46,17 @@ class BaseRepository[ModelT: Base]:
 
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
+
+    async def count(self, *filters, **filter_by) -> int:
+        stmt = select(func.count()).select_from(self.model)
+
+        if filter_by:
+            stmt = stmt.filter_by(**filter_by)
+        if filters:
+            stmt = stmt.where(*filters)
+
+        result = await self.session.execute(stmt)
+        return result.scalar_one()
 
     async def add(self, **values) -> ModelT:
         entity = self.model(**values)

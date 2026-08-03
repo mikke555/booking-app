@@ -9,13 +9,14 @@ from app.schemas.hotels import (
     HotelUpdate,
     hotel_create_examples,
 )
+from app.schemas.pagination import Page
 
 router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
 
 @router.get(
     "/",
-    response_model=list[HotelRead],
+    response_model=Page[HotelRead],
     description="List hotels with at least one room available for the requested dates.",
 )
 async def list_hotels(service: HotelServiceDep, filters: HotelFilterDep):

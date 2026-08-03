@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from app.database import session_factory
 from app.exceptions import ForbiddenError, InvalidTokenError, UserDeactivatedError
 from app.models.users import User
-from app.schemas.filters import DateRangeParams
+from app.schemas.filters import DateRangeParams, PaginationParams
 from app.schemas.hotels import HotelFilterParams
 from app.services.amenities import AmenityService
 from app.services.auth import AuthService
@@ -23,6 +23,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 DateRangeDep = Annotated[DateRangeParams, Query()]
 HotelFilterDep = Annotated[HotelFilterParams, Query()]
+PaginationDep = Annotated[PaginationParams, Query()]
 
 
 async def get_db_manager() -> AsyncIterator[DBManager]:

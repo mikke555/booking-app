@@ -1,23 +1,31 @@
 from fastapi import APIRouter, Depends, status
 
-from app.dependencies import BookingServiceDep, CurrentUserDep, get_current_admin
+from app.dependencies import (
+    BookingServiceDep,
+    CurrentUserDep,
+    PaginationDep,
+    get_current_admin,
+)
 from app.schemas.bookings import BookingCreate, BookingRead
+from app.schemas.pagination import Page
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
 
 
 @router.get(
     "/",
-    response_model=list[BookingRead],
+    response_model=Page[BookingRead],
     dependencies=[Depends(get_current_admin)],
 )
-async def get_bookings(service: BookingServiceDep):
-    return await service.list_bookings()
+async def get_bookings(service: BookingServiceDep, pagination: PaginationDep):
+    return await service.list_bookings(pagination)
 
 
-@router.get("/me", response_model=list[BookingRead])
-async def get_my_bookings(service: BookingServiceDep, user: CurrentUserDep):
-    return await service.get_user_bookings(user.id)
+@router.get("/me", response_model=Page[BookingRead])
+async def get_my_bookings(
+    service: BookingServiceDep, user: CurrentUserDep, pagination: PaginationDep
+):
+    return await service.get_user_bookings(user.id, pagination)
 
 
 @router.post("/", response_model=BookingRead, status_code=status.HTTP_201_CREATED)

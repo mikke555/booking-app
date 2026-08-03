@@ -1,6 +1,12 @@
 from fastapi import APIRouter, Depends
 
-from app.dependencies import CurrentUserDep, UserServiceDep, get_current_admin
+from app.dependencies import (
+    CurrentUserDep,
+    PaginationDep,
+    UserServiceDep,
+    get_current_admin,
+)
+from app.schemas.pagination import Page
 from app.schemas.users import UserRead, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -8,11 +14,11 @@ router = APIRouter(prefix="/users", tags=["Users"])
 
 @router.get(
     "/",
-    response_model=list[UserRead],
+    response_model=Page[UserRead],
     dependencies=[Depends(get_current_admin)],
 )
-async def list_users(service: UserServiceDep):
-    return await service.list_users()
+async def list_users(service: UserServiceDep, pagination: PaginationDep):
+    return await service.list_users(pagination)
 
 
 @router.get("/me", response_model=UserRead)
