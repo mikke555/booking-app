@@ -1,9 +1,18 @@
 from fastapi import APIRouter, Depends
 
 from app.dependencies import CurrentUserDep, UserServiceDep, get_current_admin
-from app.schemas.users import UserRead, UserSetActive
+from app.schemas.users import UserRead, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.get(
+    "/",
+    response_model=list[UserRead],
+    dependencies=[Depends(get_current_admin)],
+)
+async def list_users(service: UserServiceDep):
+    return await service.list_users()
 
 
 @router.get("/me", response_model=UserRead)
@@ -12,12 +21,9 @@ async def get_me(user: CurrentUserDep):
 
 
 @router.patch(
-    "/{user_id}/activation",
+    "/{user_id}",
     response_model=UserRead,
     dependencies=[Depends(get_current_admin)],
-    description="Activate or deactivate a user account.",
 )
-async def set_user_activation(
-    user_id: int, payload: UserSetActive, service: UserServiceDep
-):
-    return await service.set_active(user_id, is_active=payload.is_active)
+async def update_user(user_id: int, payload: UserUpdate, service: UserServiceDep):
+    return await service.update_user(user_id, payload)

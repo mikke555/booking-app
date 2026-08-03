@@ -6,8 +6,8 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=8, max_length=64)
 
 
-class UserSetActive(BaseModel):
-    is_active: bool
+class UserUpdate(BaseModel):
+    is_active: bool | None = None
 
 
 class UserRead(BaseModel):
