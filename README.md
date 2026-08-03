@@ -6,17 +6,13 @@ Built with FastAPI, SQLAlchemy 2, PostgreSQL, and Alembic.
 
 ## Requirements
 
-- [uv](https://docs.astral.sh/uv/#installation)
-- Python 3.14, installed with `uv python install 3.14`
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- For running locally: [uv](https://docs.astral.sh/uv/#installation) and Python 3.14, installed with `uv python install 3.14`
 
-## Setup guide
+## Configuration
 
 ```bash
-uv sync                        # install dependencies
-cp .env.example .env           # config — see below
-docker compose up -d           # start PostgreSQL
-uv run alembic upgrade head    # apply migrations
+cp .env.example .env
 ```
 
 Generate a secret key and paste it into `JWT_KEY` in `.env`:
@@ -25,16 +21,30 @@ Generate a secret key and paste it into `JWT_KEY` in `.env`:
 uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
-Seed the database with demo data:
+## Run with Docker
 
 ```bash
-uv run python -m scripts.seed
+docker compose up -d
 ```
 
-Run the app:
+This builds the app image, starts PostgreSQL, applies migrations, and serves the API.
+
+Seed the database with demo data (optional):
 
 ```bash
-uv run fastapi dev
+docker compose run --rm app python -m scripts.seed
+```
+
+Interactive docs: http://localhost:8000/docs
+
+## Run locally
+
+```bash
+uv sync                        # install dependencies
+docker compose up -d db        # start PostgreSQL only
+uv run alembic upgrade head    # apply migrations
+uv run python -m scripts.seed  # seed demo data (optional)
+uv run fastapi dev             # run with auto-reload
 ```
 
 Interactive docs: http://localhost:8000/docs
@@ -58,7 +68,13 @@ uv run alembic downgrade -1
 uv run alembic downgrade base
 ```
 
-Check the database container, open a psql shell, or stop it and wipe the data:
+Rebuild the app image after code or dependency changes:
+
+```bash
+docker compose up -d --build
+```
+
+Check the database container, open a psql shell, or stop everything and wipe the data:
 
 ```bash
 docker compose exec db pg_isready
