@@ -4,7 +4,7 @@ from sqlalchemy import text
 
 from app.database import SessionDep
 
-router = APIRouter(tags=["Healthcheck"])
+router = APIRouter(tags=["Meta"])
 
 
 @router.get(

@@ -1,7 +1,7 @@
 [project]
-name = "fastapi-starter"
+name = "booking-app"
 version = "0.1.0"
-description = "Add your description here"
+description = "Hotel booking REST API"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
