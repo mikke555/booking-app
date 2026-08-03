@@ -26,6 +26,6 @@ class Room(Base):
         ForeignKey("hotels.id", ondelete="CASCADE"), index=True
     )
 
-    amenities: Mapped[list["Amenity"]] = relationship(
+    amenities: Mapped[list[Amenity]] = relationship(
         secondary="room_amenities", back_populates="rooms"
     )

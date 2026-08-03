@@ -42,5 +42,5 @@ def decode_access_token(token: str) -> int:
         )
         return int(payload["sub"])
 
-    except jwt.InvalidTokenError, ValueError:
-        raise InvalidTokenError
+    except (jwt.InvalidTokenError, ValueError) as e:
+        raise InvalidTokenError from e
