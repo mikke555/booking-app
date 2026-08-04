@@ -5,18 +5,21 @@ Usage: uv run python -m scripts.seed
 
 import asyncio
 import sys
-from datetime import date, timedelta
+from datetime import timedelta
 
 from sqlalchemy import func, select
 
 from app.database import session_factory
 from app.models.hotels import Hotel
 from app.models.users import User
+from app.utils.clock import today
 from app.utils.db_manager import DBManager
 from app.utils.security import hash_password
 
 ADMIN_EMAIL = "admin@booking.app"
 PASSWORD = "password123"
+
+current_date = today()
 
 
 async def seed(db: DBManager) -> list[User]:
@@ -101,26 +104,25 @@ async def seed(db: DBManager) -> list[User]:
         email="bob@example.com", hashed_password=hash_password(PASSWORD)
     )
 
-    today = date.today()
     await db.bookings.add(
         room_id=single.id,
         user_id=alice.id,
-        date_from=today + timedelta(days=7),
-        date_to=today + timedelta(days=10),
+        date_from=current_date + timedelta(days=7),
+        date_to=current_date + timedelta(days=10),
         price=single.price,
     )
     await db.bookings.add(
         room_id=double.id,
         user_id=alice.id,
-        date_from=today + timedelta(days=30),
-        date_to=today + timedelta(days=33),
+        date_from=current_date + timedelta(days=30),
+        date_to=current_date + timedelta(days=33),
         price=double.price,
     )
     await db.bookings.add(
         room_id=suite.id,
         user_id=bob.id,
-        date_from=today + timedelta(days=14),
-        date_to=today + timedelta(days=21),
+        date_from=current_date + timedelta(days=14),
+        date_to=current_date + timedelta(days=21),
         price=suite.price,
     )
 
