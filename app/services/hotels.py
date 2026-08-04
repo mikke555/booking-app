@@ -6,13 +6,13 @@ from app.exceptions import (
     HotelNotFoundError,
 )
 from app.models.hotels import Hotel
-from app.schemas.hotels import HotelCreate, HotelFilterParams, HotelRead, HotelUpdate
+from app.schemas.hotels import HotelCreate, HotelFilterParams, HotelUpdate
 from app.schemas.pagination import Page
 from app.services.base import BaseService
 
 
 class HotelService(BaseService):
-    async def list_hotels(self, filters: HotelFilterParams) -> Page[HotelRead]:
+    async def list_hotels(self, filters: HotelFilterParams) -> Page[Hotel]:
         items = await self.db.hotels.list_available(
             name=filters.name,
             location=filters.location,
@@ -27,7 +27,7 @@ class HotelService(BaseService):
             date_from=filters.date_from,
             date_to=filters.date_to,
         )
-        return Page[HotelRead](
+        return Page[Hotel](
             items=items,
             total=total,
             page=filters.page,

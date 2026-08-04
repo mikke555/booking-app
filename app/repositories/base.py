@@ -37,7 +37,9 @@ class BaseRepository[ModelT: Base]:
         if filters:
             stmt = stmt.where(*filters)
 
-        stmt = stmt.order_by(order_by if order_by is not None else self.model.id)
+        stmt = stmt.order_by(
+            order_by if order_by is not None else self.model.id  # pyright: ignore[reportAttributeAccessIssue]
+        )
 
         if limit is not None:
             stmt = stmt.limit(limit)

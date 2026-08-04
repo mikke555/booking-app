@@ -20,7 +20,7 @@ class HotelRepository(BaseRepository[Hotel]):
     ) -> list[ColumnElement[bool]]:
         available_hotel_ids = available_hotel_ids_stmt(date_from, date_to)
 
-        filters = [Hotel.id.in_(available_hotel_ids)]
+        filters: list[ColumnElement[bool]] = [Hotel.id.in_(available_hotel_ids)]
         if name is not None:
             filters.append(Hotel.name.ilike(f"%{name}%"))
         if location is not None:

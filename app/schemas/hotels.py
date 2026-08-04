@@ -1,3 +1,4 @@
+from fastapi.openapi.models import Example
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.json_schema import SkipJsonSchema
 
@@ -29,19 +30,19 @@ class HotelRead(HotelBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-hotel_create_examples = {
-    "tallinn": {
-        "summary": "Tallinn hotel",
-        "value": {
+hotel_create_examples: dict[str, Example] = {
+    "tallinn": Example(
+        summary="Tallinn hotel",
+        value={
             "name": "Nordic Hotel Forum",
             "location": "Tallinn",
         },
-    },
-    "dubai": {
-        "summary": "Dubai hotel",
-        "value": {
+    ),
+    "dubai": Example(
+        summary="Dubai hotel",
+        value={
             "name": "Burj Al Arab",
             "location": "Dubai",
         },
-    },
+    ),
 }

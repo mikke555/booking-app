@@ -1,3 +1,4 @@
+from fastapi.openapi.models import Example
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.amenities import AmenityRead
@@ -41,23 +42,23 @@ class RoomUpdate(BaseModel):
     amenities_ids: list[int] | None = None
 
 
-room_create_examples = {
-    "single": {
-        "summary": "Single room",
-        "value": {
+room_create_examples: dict[str, Example] = {
+    "single": Example(
+        summary="Single room",
+        value={
             "title": "Single Room",
             "description": "Compact room with a single bed",
             "quantity": 2,
             "price": 100,
         },
-    },
-    "double": {
-        "summary": "Double room",
-        "value": {
+    ),
+    "double": Example(
+        summary="Double room",
+        value={
             "title": "Double Room",
             "description": "Room with a double bed and city view",
             "quantity": 1,
             "price": 250,
         },
-    },
+    ),
 }

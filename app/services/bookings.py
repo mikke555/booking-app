@@ -4,23 +4,21 @@ from app.exceptions import (
     RoomNotFoundError,
 )
 from app.models.bookings import Booking
-from app.schemas.bookings import BookingAdminRead, BookingCreate, BookingRead
+from app.schemas.bookings import BookingCreate
 from app.schemas.filters import PaginationParams
 from app.schemas.pagination import Page
 from app.services.base import BaseService
 
 
 class BookingService(BaseService):
-    async def list_bookings(
-        self, pagination: PaginationParams
-    ) -> Page[BookingAdminRead]:
+    async def list_bookings(self, pagination: PaginationParams) -> Page[Booking]:
         items = await self.db.bookings.list(
             limit=pagination.limit,
             offset=pagination.offset,
             order_by=Booking.id.desc(),
         )
         total = await self.db.bookings.count()
-        return Page[BookingAdminRead](
+        return Page[Booking](
             items=items,
             total=total,
             page=pagination.page,
@@ -29,7 +27,7 @@ class BookingService(BaseService):
 
     async def get_user_bookings(
         self, user_id: int, pagination: PaginationParams
-    ) -> Page[BookingRead]:
+    ) -> Page[Booking]:
         items = await self.db.bookings.list(
             limit=pagination.limit,
             offset=pagination.offset,
@@ -37,7 +35,7 @@ class BookingService(BaseService):
             user_id=user_id,
         )
         total = await self.db.bookings.count(user_id=user_id)
-        return Page[BookingRead](
+        return Page[Booking](
             items=items,
             total=total,
             page=pagination.page,
