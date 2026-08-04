@@ -45,7 +45,8 @@ class RoomService(BaseService):
     async def _resolve_amenities(self, amenities_ids: list[int]) -> list[Amenity]:
         if not amenities_ids:
             return []
-        amenities = await self.db.amenities.list(Amenity.id.in_(amenities_ids))
+
+        amenities = await self.db.amenities.list_by_ids(amenities_ids)
         if len(amenities) != len(set(amenities_ids)):
             raise AmenityNotFoundError
         return amenities
