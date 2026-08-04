@@ -30,6 +30,7 @@ class Booking(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     @property
     def total_cost(self) -> int:
