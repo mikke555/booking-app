@@ -9,13 +9,14 @@ from app.repositories.base import BaseRepository
 class BookingRepository(BaseRepository[Booking]):
     model = Booking
 
-    async def cancel(self, booking_id: int, user_id: int) -> Booking | None:
+    async def cancel(self, booking_id: int, *, owner_id: int | None) -> Booking | None:
+        filters = [Booking.id == booking_id]
+        if owner_id is not None:
+            filters.append(Booking.user_id == owner_id)
+
         stmt = (
             update(Booking)
-            .where(
-                Booking.id == booking_id,
-                Booking.user_id == user_id,
-            )
+            .where(*filters)
             .values(
                 cancelled_at=func.coalesce(
                     Booking.cancelled_at,
@@ -33,6 +34,7 @@ class BookingRepository(BaseRepository[Booking]):
     ) -> int:
         return await self.count(
             Booking.room_id == room_id,
+            Booking.cancelled_at.is_(None),
             Booking.date_from < date_to,
             Booking.date_to > date_from,
         )

@@ -11,7 +11,9 @@ from app.services.base import BaseService
 
 
 class BookingService(BaseService):
-    async def list_bookings(self, pagination: PaginationParams) -> Page[BookingRead]:
+    async def list_bookings(
+        self, pagination: PaginationParams
+    ) -> Page[BookingAdminRead]:
         items = await self.db.bookings.list(
             limit=pagination.limit,
             offset=pagination.offset,
@@ -62,8 +64,10 @@ class BookingService(BaseService):
         await self.db.commit()
         return booking
 
-    async def cancel_booking(self, *, booking_id: int, user_id: int) -> Booking:
-        booking = await self.db.bookings.cancel(booking_id=booking_id, user_id=user_id)
+    async def cancel_booking(self, *, booking_id: int, owner_id: int | None) -> Booking:
+        booking = await self.db.bookings.cancel(
+            booking_id=booking_id, owner_id=owner_id
+        )
 
         if booking is None:
             raise BookingNotFoundError

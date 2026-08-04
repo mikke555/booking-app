@@ -39,4 +39,7 @@ async def create_booking(
 async def cancel_booking(
     booking_id: int, service: BookingServiceDep, user: CurrentUserDep
 ):
-    return await service.cancel_booking(booking_id=booking_id, user_id=user.id)
+    return await service.cancel_booking(
+        booking_id=booking_id,
+        owner_id=None if user.is_admin else user.id,
+    )
