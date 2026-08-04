@@ -19,13 +19,14 @@ class UserService(BaseService):
             per_page=pagination.per_page,
         )
 
-    async def get_user(self, user_id: int) -> User | None:
-        return await self.db.users.get_by_id(user_id)
-
-    async def update_user(self, user_id: int, data: UserUpdate) -> User:
+    async def get_user(self, user_id: int) -> User:
         user = await self.db.users.get_by_id(user_id)
         if user is None:
             raise UserNotFoundError
+        return user
+
+    async def update_user(self, user_id: int, data: UserUpdate) -> User:
+        user = await self.get_user(user_id)
 
         await self.db.users.update(user, data.model_dump(exclude_unset=True))
         await self.db.commit()
