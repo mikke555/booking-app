@@ -19,6 +19,9 @@ class UserService(BaseService):
             per_page=pagination.per_page,
         )
 
+    async def get_user(self, user_id: int) -> User:
+        return await self.db.users.get_by_id(user_id)
+
     async def update_user(self, user_id: int, data: UserUpdate) -> User:
         user = await self.db.users.get_by_id(user_id)
         if user is None:

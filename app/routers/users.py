@@ -26,6 +26,11 @@ async def get_me(user: CurrentUserDep):
     return user
 
 
+@router.get("/{id}", response_model=UserRead)
+async def get_user(user_id: int, service: UserServiceDep):
+    return await service.get_user(user_id)
+
+
 @router.patch(
     "/{user_id}",
     response_model=UserRead,
