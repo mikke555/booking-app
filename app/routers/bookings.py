@@ -6,7 +6,7 @@ from app.dependencies import (
     PaginationDep,
     get_current_admin,
 )
-from app.schemas.bookings import BookingCreate, BookingRead
+from app.schemas.bookings import BookingAdminRead, BookingCreate, BookingRead
 from app.schemas.pagination import Page
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/bookings", tags=["Bookings"])
 
 @router.get(
     "/",
-    response_model=Page[BookingRead],
+    response_model=Page[BookingAdminRead],
     dependencies=[Depends(get_current_admin)],
 )
 async def get_bookings(service: BookingServiceDep, pagination: PaginationDep):
@@ -33,3 +33,10 @@ async def create_booking(
     payload: BookingCreate, service: BookingServiceDep, user: CurrentUserDep
 ):
     return await service.create_booking(payload, user_id=user.id)
+
+
+@router.post("/{booking_id}/cancel", response_model=BookingRead)
+async def cancel_booking(
+    booking_id: int, service: BookingServiceDep, user: CurrentUserDep
+):
+    return await service.cancel_booking(booking_id=booking_id, user_id=user.id)

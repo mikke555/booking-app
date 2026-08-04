@@ -19,6 +19,7 @@ def available_rooms_stmt(
         .outerjoin(
             Booking,
             (Booking.room_id == Room.id)
+            & Booking.cancelled_at.is_(None)
             & (Booking.date_from < date_to)
             & (Booking.date_to > date_from),
         )

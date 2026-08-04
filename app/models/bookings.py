@@ -1,9 +1,12 @@
 from datetime import date, datetime
+from typing import Literal
 
 from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
+
+type BookingStatus = Literal["confirmed", "cancelled"]
 
 
 class Booking(Base):
@@ -35,3 +38,7 @@ class Booking(Base):
     @property
     def total_cost(self) -> int:
         return self.price * (self.date_to - self.date_from).days
+
+    @property
+    def status(self) -> BookingStatus:
+        return "cancelled" if self.cancelled_at is not None else "confirmed"

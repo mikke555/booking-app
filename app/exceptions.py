@@ -25,6 +25,10 @@ class UserNotFoundError(ObjectNotFoundError):
     detail = "User not found"
 
 
+class BookingNotFoundError(ObjectNotFoundError):
+    detail = "Booking not found"
+
+
 class ObjectAlreadyExistsError(AppException):
     status_code = 409
     detail = "Object already exists"

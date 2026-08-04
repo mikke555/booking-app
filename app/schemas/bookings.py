@@ -18,8 +18,13 @@ class BookingRead(BaseModel):
     price: int
     total_cost: int
     created_at: datetime
+    status: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class BookingAdminRead(BookingRead):
+    cancelled_at: datetime | None
 
 
 class BookingCreate(BookingBase):
