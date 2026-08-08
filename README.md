@@ -82,3 +82,20 @@ docker compose exec db psql -U postgres -d booking
 
 docker compose down -v
 ```
+
+## Testing
+
+Tests run against a separate `booking_test` database, configured via `.env.test`.
+
+Create the test database once, before the first run or after `docker compose down -v`:
+
+```bash
+docker compose exec db createdb -U postgres booking_test
+docker compose exec db psql -U postgres -l    # verify it exists
+```
+
+Run the tests:
+
+```bash
+uv run pytest
+```
