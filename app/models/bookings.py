@@ -18,8 +18,8 @@ class Booking(Base):
             name="ck_bookings_valid_dates",
         ),
         CheckConstraint(
-            "price >= 0",
-            name="ck_bookings_price_non_negative",
+            "price > 0",
+            name="ck_bookings_price_positive",
         ),
         Index("ix_bookings_room_dates", "room_id", "date_from", "date_to"),
     )
