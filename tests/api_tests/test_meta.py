@@ -1,0 +1,10 @@
+async def test_service_info(client):
+    resp = await client.get("/")
+    assert resp.status_code == 200
+    assert resp.json()["app"] == "Hotel Booking API"
+
+
+async def test_healthcheck(client):
+    resp = await client.get("/health")
+    assert resp.status_code == 200
+    assert resp.json() == {"status": "healthy"}

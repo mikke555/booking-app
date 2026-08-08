@@ -1,4 +1,5 @@
 import pytest
+from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 import app.models  # noqa: F401
@@ -54,3 +55,13 @@ async def override_db(db_transaction):
     yield
 
     app.dependency_overrides.clear()
+
+
+# Test-facing fixtures
+
+
+@pytest.fixture
+async def client():
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        yield client
