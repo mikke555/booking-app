@@ -65,3 +65,9 @@ async def client():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
+
+
+@pytest.fixture
+async def db(db_transaction):
+    async with DBManager(db_transaction) as db:
+        yield db
