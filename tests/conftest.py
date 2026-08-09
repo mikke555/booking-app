@@ -11,10 +11,7 @@ from app.dependencies import get_db_manager
 from app.main import app
 from app.utils.db_manager import DBManager
 from app.utils.security import create_access_token
-from tests.const import DATE_FROM, DATE_TO
-
-PASSWORD = "password123"
-PASSWORD_HASH = "$argon2id$v=19$m=65536,t=3,p=4$5EA2LBGgz4ZnUJav8JcmeA$RyOCu4XpSCph+/TGxhsw54t1/d3fTvjVtHrorbSRDmU"
+from tests.const import DATE_FROM, DATE_TO, PASSWORD_HASH
 
 
 @pytest.fixture(scope="session", autouse=True)

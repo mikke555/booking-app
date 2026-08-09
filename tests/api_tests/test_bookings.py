@@ -1,7 +1,7 @@
 import pytest
 
 from app.utils.security import create_access_token
-from tests.const import DATE_FROM, DATE_TO
+from tests.const import DATE_FROM, DATE_TO, PASSWORD_HASH
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ async def booking(make_booking, room):
 
 @pytest.fixture
 async def other_user_headers(db):
-    other = await db.users.add(email="other@example.com", hashed_password="irrelevant")
+    other = await db.users.add(email="other@example.com", hashed_password=PASSWORD_HASH)
     await db.commit()
     return {"Authorization": f"Bearer {create_access_token(other.id)}"}
 

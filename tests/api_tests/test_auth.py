@@ -1,4 +1,4 @@
-from tests.conftest import PASSWORD, PASSWORD_HASH
+from tests.const import PASSWORD, PASSWORD_HASH
 
 
 async def test_register(client):
