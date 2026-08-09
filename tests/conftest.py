@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker
@@ -9,6 +11,7 @@ from app.dependencies import get_db_manager
 from app.main import app
 from app.utils.db_manager import DBManager
 from app.utils.security import create_access_token
+from tests.const import DATE_FROM, DATE_TO
 
 PASSWORD = "password123"
 PASSWORD_HASH = "$argon2id$v=19$m=65536,t=3,p=4$5EA2LBGgz4ZnUJav8JcmeA$RyOCu4XpSCph+/TGxhsw54t1/d3fTvjVtHrorbSRDmU"
@@ -104,3 +107,49 @@ def user_headers(user):
 @pytest.fixture
 def admin_headers(admin):
     return {"Authorization": f"Bearer {create_access_token(admin.id)}"}
+
+
+# Hotels, rooms & bookings
+
+
+@pytest.fixture
+async def hotel(db):
+    hotel = await db.hotels.add(name="Affordable Palace", location="Château d'Or")
+    await db.commit()
+    return hotel
+
+
+@pytest.fixture
+async def room(db, hotel):
+    room = await db.rooms.add(
+        hotel_id=hotel.id,
+        title="Standard",
+        description="Room with a view of the parking lot",
+        price=100,
+        quantity=2,
+    )
+    await db.commit()
+    return room
+
+
+@pytest.fixture
+async def amenity(db):
+    amenity = await db.amenities.add(name="Wi-Fi")
+    await db.commit()
+    return amenity
+
+
+@pytest.fixture
+def make_booking(db, user):
+    async def _make_booking(room):
+        booking = await db.bookings.add(
+            room_id=room.id,
+            user_id=user.id,
+            date_from=date.fromisoformat(DATE_FROM),
+            date_to=date.fromisoformat(DATE_TO),
+            price=room.price,
+        )
+        await db.commit()
+        return booking
+
+    return _make_booking
