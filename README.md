@@ -51,11 +51,12 @@ Interactive docs: http://localhost:8000/docs
 
 ## Development
 
-Format and lint:
+Format, lint, and type-check:
 
 ```bash
 uv run ruff format
 uv run ruff check
+uv run pyright
 ```
 
 Generate a migration from model changes, apply it, revert one revision, or roll everything back:
