@@ -1,7 +1,12 @@
+from typing import TYPE_CHECKING
+
 from fastapi.openapi.models import Example
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas.amenities import AmenityRead
+
+if TYPE_CHECKING:
+    from app.models.rooms import Room
 
 
 class RoomBase(BaseModel):
@@ -32,6 +37,13 @@ class RoomRead(RoomReadBase):
 
 class RoomReadAvailable(RoomReadBase):
     quantity_left: int
+
+    @classmethod
+    def from_row(cls, room: Room, quantity_left: int) -> RoomReadAvailable:
+        return cls(
+            **RoomReadBase.model_validate(room).model_dump(),
+            quantity_left=quantity_left,
+        )
 
 
 class RoomUpdate(BaseModel):

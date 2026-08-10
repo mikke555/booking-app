@@ -12,7 +12,6 @@ from app.schemas.filters import DateRangeParams
 from app.schemas.rooms import (
     RoomCreate,
     RoomReadAvailable,
-    RoomReadBase,
     RoomUpdate,
 )
 from app.services.base import BaseService
@@ -35,10 +34,7 @@ class RoomService(BaseService):
             date_to=dates.date_to,
         )
         return [
-            RoomReadAvailable(
-                **RoomReadBase.model_validate(room).model_dump(),
-                quantity_left=quantity_left,
-            )
+            RoomReadAvailable.from_row(room, quantity_left)
             for room, quantity_left in rows
         ]
 
