@@ -47,8 +47,9 @@ class RoomService(BaseService):
             return []
 
         amenities = await self.db.amenities.list_by_ids(amenities_ids)
-        if len(amenities) != len(set(amenities_ids)):
-            raise AmenityNotFoundError
+        missing = set(amenities_ids) - set(a.id for a in amenities)
+        if missing:
+            raise AmenityNotFoundError(f"Amenities not found: {sorted(missing)}")
         return amenities
 
     async def create_room(self, data: RoomCreate, *, hotel_id: int) -> Room:

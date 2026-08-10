@@ -3,6 +3,11 @@ class AppException(Exception):
     detail = "Application error"
     headers: dict[str, str] | None = None
 
+    def __init__(self, detail: str | None = None):
+        if detail is not None:
+            self.detail = detail
+        super().__init__(self.detail)
+
 
 class ObjectNotFoundError(AppException):
     status_code = 404
