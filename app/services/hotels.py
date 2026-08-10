@@ -13,19 +13,13 @@ from app.services.base import BaseService
 
 class HotelService(BaseService):
     async def list_hotels(self, filters: HotelFilterParams) -> Page[Hotel]:
-        items = await self.db.hotels.list_available(
-            name=filters.name,
-            location=filters.location,
+        items, total = await self.db.hotels.search(
             date_from=filters.date_from,
             date_to=filters.date_to,
+            name=filters.name,
+            location=filters.location,
             limit=filters.limit,
             offset=filters.offset,
-        )
-        total = await self.db.hotels.count_available(
-            name=filters.name,
-            location=filters.location,
-            date_from=filters.date_from,
-            date_to=filters.date_to,
         )
         return Page[Hotel](
             items=items,

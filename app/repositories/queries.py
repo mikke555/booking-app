@@ -12,6 +12,11 @@ def available_rooms_stmt(
     date_to: date,
     hotel_id: int | None = None,
 ) -> Select[Any]:
+    """Rooms with at least one unit free in [date_from, date_to).
+
+    Outer-joins non-cancelled bookings overlapping the date range and
+    keeps rooms where quantity > booked count. Selects (Room, quantity_left).
+    """
     booked_count = func.count(Booking.id)
 
     stmt = (
@@ -34,4 +39,5 @@ def available_rooms_stmt(
 
 
 def available_hotel_ids_stmt(date_from: date, date_to: date) -> Select[Any]:
+    """Ids of hotels with at least one available room in [date_from, date_to)."""
     return available_rooms_stmt(date_from, date_to).with_only_columns(Room.hotel_id)
