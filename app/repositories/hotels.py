@@ -28,6 +28,4 @@ class HotelRepository(BaseRepository[Hotel]):
         if location is not None:
             filters.append(Hotel.location.ilike(f"%{location}%"))
 
-        items = await self.list(*filters, limit=limit, offset=offset)
-        total = await self.count(*filters)
-        return items, total
+        return await self.list_and_count(*filters, limit=limit, offset=offset)

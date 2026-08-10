@@ -8,10 +8,9 @@ from app.services.base import BaseService
 
 class UserService(BaseService):
     async def list_users(self, pagination: PaginationParams) -> Page[User]:
-        items = await self.db.users.list(
+        items, total = await self.db.users.list_and_count(
             limit=pagination.limit, offset=pagination.offset
         )
-        total = await self.db.users.count()
         return Page[User](
             items=items,
             total=total,

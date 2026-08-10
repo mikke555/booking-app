@@ -22,6 +22,21 @@ class BaseRepository[ModelT: Base]:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def add(self, **values) -> ModelT:
+        entity = self.model(**values)
+        self.session.add(entity)
+        await self.session.flush()
+        return entity
+
+    async def update(self, entity: ModelT, **values) -> ModelT:
+        for key, value in values.items():
+            setattr(entity, key, value)
+        await self.session.flush()
+        return entity
+
+    async def delete(self, entity: ModelT) -> None:
+        await self.session.delete(entity)
+
     async def list(
         self,
         *filters,
@@ -60,17 +75,16 @@ class BaseRepository[ModelT: Base]:
         result = await self.session.execute(stmt)
         return result.scalar_one()
 
-    async def add(self, **values) -> ModelT:
-        entity = self.model(**values)
-        self.session.add(entity)
-        await self.session.flush()
-        return entity
-
-    async def update(self, entity: ModelT, **values) -> ModelT:
-        for key, value in values.items():
-            setattr(entity, key, value)
-        await self.session.flush()
-        return entity
-
-    async def delete(self, entity: ModelT) -> None:
-        await self.session.delete(entity)
+    async def list_and_count(
+        self,
+        *filters,
+        limit: int | None = None,
+        offset: int | None = None,
+        order_by: ColumnElement[Any] | None = None,
+        **filter_by,
+    ) -> tuple[list[ModelT], int]:
+        items = await self.list(
+            *filters, limit=limit, offset=offset, order_by=order_by, **filter_by
+        )
+        total = await self.count(*filters, **filter_by)
+        return items, total

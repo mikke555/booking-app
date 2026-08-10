@@ -15,13 +15,12 @@ class BookingService(BaseService):
         self, pagination: PaginationParams, user_id: int | None = None
     ) -> Page[Booking]:
         filter_by = {} if user_id is None else {"user_id": user_id}
-        items = await self.db.bookings.list(
+        items, total = await self.db.bookings.list_and_count(
             limit=pagination.limit,
             offset=pagination.offset,
             order_by=Booking.id.desc(),
             **filter_by,
         )
-        total = await self.db.bookings.count(**filter_by)
         return Page[Booking](
             items=items,
             total=total,
