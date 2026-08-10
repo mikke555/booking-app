@@ -25,7 +25,7 @@ async def get_bookings(service: BookingServiceDep, pagination: PaginationDep):
 async def get_my_bookings(
     service: BookingServiceDep, user: CurrentUserDep, pagination: PaginationDep
 ):
-    return await service.get_user_bookings(user.id, pagination)
+    return await service.list_bookings(pagination, user_id=user.id)
 
 
 @router.post("/", response_model=BookingRead, status_code=status.HTTP_201_CREATED)

@@ -11,30 +11,17 @@ from app.services.base import BaseService
 
 
 class BookingService(BaseService):
-    async def list_bookings(self, pagination: PaginationParams) -> Page[Booking]:
-        items = await self.db.bookings.list(
-            limit=pagination.limit,
-            offset=pagination.offset,
-            order_by=Booking.id.desc(),
-        )
-        total = await self.db.bookings.count()
-        return Page[Booking](
-            items=items,
-            total=total,
-            page=pagination.page,
-            per_page=pagination.per_page,
-        )
-
-    async def get_user_bookings(
-        self, user_id: int, pagination: PaginationParams
+    async def list_bookings(
+        self, pagination: PaginationParams, user_id: int | None = None
     ) -> Page[Booking]:
+        filter_by = {} if user_id is None else {"user_id": user_id}
         items = await self.db.bookings.list(
             limit=pagination.limit,
             offset=pagination.offset,
             order_by=Booking.id.desc(),
-            user_id=user_id,
+            **filter_by,
         )
-        total = await self.db.bookings.count(user_id=user_id)
+        total = await self.db.bookings.count(**filter_by)
         return Page[Booking](
             items=items,
             total=total,
