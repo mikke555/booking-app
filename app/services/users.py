@@ -28,6 +28,6 @@ class UserService(BaseService):
     async def update_user(self, user_id: int, data: UserUpdate) -> User:
         user = await self.get_user(user_id)
 
-        await self.db.users.update(user, data.model_dump(exclude_unset=True))
+        await self.db.users.update(user, **data.model_dump(exclude_unset=True))
         await self.db.commit()
         return user

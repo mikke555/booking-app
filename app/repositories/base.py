@@ -66,7 +66,7 @@ class BaseRepository[ModelT: Base]:
         await self.session.flush()
         return entity
 
-    async def update(self, entity: ModelT, values: dict) -> ModelT:
+    async def update(self, entity: ModelT, **values) -> ModelT:
         for key, value in values.items():
             setattr(entity, key, value)
         await self.session.flush()

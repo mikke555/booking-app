@@ -77,7 +77,7 @@ class RoomService(BaseService):
         if amenities_ids is not None:
             room.amenities = await self._resolve_amenities(amenities_ids)
 
-        await self.db.rooms.update(room, values)
+        await self.db.rooms.update(room, **values)
         await self.db.commit()
         return room
 

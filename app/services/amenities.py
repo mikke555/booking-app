@@ -27,7 +27,7 @@ class AmenityService(BaseService):
     async def update_amenity(self, amenity_id: int, data: AmenityCreate) -> Amenity:
         amenity = await self.get_amenity(amenity_id)
         try:
-            await self.db.amenities.update(amenity, data.model_dump())
+            await self.db.amenities.update(amenity, **data.model_dump())
             await self.db.commit()
             return amenity
         except IntegrityError as e:
