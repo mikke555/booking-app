@@ -1,3 +1,5 @@
+import logging
+
 from sqlalchemy.exc import IntegrityError
 
 from app.exceptions import (
@@ -15,6 +17,8 @@ from app.utils.security import (
     hash_password,
     verify_password,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class AuthService(BaseService):
@@ -35,12 +39,15 @@ class AuthService(BaseService):
 
         if user is None:
             verify_password(password, DUMMY_HASH)
+            logger.warning("Failed login for %s: unknown email", email)
             raise InvalidCredentialsError
 
         if not verify_password(password, user.hashed_password):
+            logger.warning("Failed login for %s: wrong password", email)
             raise InvalidCredentialsError
 
         if not user.is_active:
+            logger.warning("Login attempt for deactivated account %s", email)
             raise UserDeactivatedError
 
         return AccessToken(access_token=create_access_token(user.id))

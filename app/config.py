@@ -1,3 +1,5 @@
+import logging
+
 from pydantic import PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -14,6 +16,7 @@ class Settings(BaseSettings):
     jwt_exp: int
 
     db_echo: bool = False
+    debug: bool = False
 
     @property
     def database_url(self) -> str:
@@ -30,6 +33,15 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
+    )
+
+
+def configure_logging(*, debug: bool) -> None:
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s %(levelname)-7s %(name)s - %(message)s",
+        datefmt="%H:%M:%S",
     )
 
 

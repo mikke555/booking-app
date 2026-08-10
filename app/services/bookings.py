@@ -1,3 +1,5 @@
+import logging
+
 from app.exceptions import (
     BookingNotFoundError,
     RoomNotAvailableError,
@@ -8,6 +10,8 @@ from app.schemas.bookings import BookingCreate
 from app.schemas.filters import PaginationParams
 from app.schemas.pagination import Page
 from app.services.base import BaseService
+
+logger = logging.getLogger(__name__)
 
 
 class BookingService(BaseService):
@@ -39,6 +43,12 @@ class BookingService(BaseService):
             date_to=data.date_to,
         )
         if booked >= room.quantity:
+            logger.info(
+                "Booking rejected: room=%s is full for %s %s",
+                room.id,
+                data.date_from,
+                data.date_to,
+            )
             raise RoomNotAvailableError
 
         booking = await self.db.bookings.add(
@@ -46,6 +56,14 @@ class BookingService(BaseService):
         )
 
         await self.db.commit()
+        logger.info(
+            "Booking %s created: room=%s user=%s %s %s",
+            booking.id,
+            room.id,
+            user_id,
+            data.date_from,
+            data.date_to,
+        )
         return booking
 
     async def cancel_booking(self, *, booking_id: int, owner_id: int | None) -> Booking:
@@ -57,4 +75,9 @@ class BookingService(BaseService):
             raise BookingNotFoundError
 
         await self.db.commit()
+        logger.info(
+            "Booking %s cancelled by %s",
+            booking_id,
+            "admin" if owner_id is None else f"user {owner_id}",
+        )
         return booking
