@@ -69,7 +69,7 @@ class RoomService(BaseService):
     async def update_room(self, room_id: int, data: RoomUpdate) -> Room:
         room = await self.get_room(room_id)
 
-        values = data.model_dump(exclude_unset=True)
+        values = data.model_dump(exclude_unset=True, exclude_none=True)
         amenities_ids = values.pop("amenities_ids", None)
         if amenities_ids is not None:
             room.amenities = await self._resolve_amenities(amenities_ids)

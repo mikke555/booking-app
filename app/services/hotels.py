@@ -51,7 +51,9 @@ class HotelService(BaseService):
     async def update_hotel(self, hotel_id: int, data: HotelUpdate) -> Hotel:
         hotel = await self.get_hotel(hotel_id)
         try:
-            await self.db.hotels.update(hotel, **data.model_dump(exclude_unset=True))
+            await self.db.hotels.update(
+                hotel, **data.model_dump(exclude_unset=True, exclude_none=True)
+            )
             await self.db.commit()
             return hotel
         except IntegrityError as e:
