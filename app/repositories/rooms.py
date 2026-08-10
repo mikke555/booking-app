@@ -5,8 +5,8 @@ from sqlalchemy.orm import selectinload, with_expression
 
 from app.models.bookings import Booking
 from app.models.rooms import Room
+from app.repositories.availability import available_rooms_stmt
 from app.repositories.base import BaseRepository
-from app.repositories.queries import available_rooms_stmt
 
 
 class RoomRepository(BaseRepository[Room]):

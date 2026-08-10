@@ -3,8 +3,8 @@ from datetime import date
 from sqlalchemy import ColumnElement
 
 from app.models.hotels import Hotel
+from app.repositories.availability import available_hotel_ids_stmt
 from app.repositories.base import BaseRepository
-from app.repositories.queries import available_hotel_ids_stmt
 
 
 class HotelRepository(BaseRepository[Hotel]):
