@@ -1,7 +1,9 @@
 from datetime import date
 
-from sqlalchemy.orm import selectinload
+from sqlalchemy import func
+from sqlalchemy.orm import selectinload, with_expression
 
+from app.models.bookings import Booking
 from app.models.rooms import Room
 from app.repositories.base import BaseRepository
 from app.repositories.queries import available_rooms_stmt
@@ -17,12 +19,17 @@ class RoomRepository(BaseRepository[Room]):
 
     async def list_available(
         self, *, hotel_id: int, date_from: date, date_to: date
-    ) -> list[tuple[Room, int]]:
+    ) -> list[Room]:
         stmt = (
             available_rooms_stmt(date_from, date_to, hotel_id=hotel_id)
-            .options(selectinload(Room.amenities))
+            .options(
+                with_expression(
+                    Room.quantity_left, Room.quantity - func.count(Booking.id)
+                ),
+                selectinload(Room.amenities),
+            )
             .order_by(Room.id)
         )
 
         result = await self.session.execute(stmt)
-        return list(result.tuples().all())
+        return list(result.scalars().all())

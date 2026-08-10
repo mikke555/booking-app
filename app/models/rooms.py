@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, query_expression, relationship
 
 from app.database import Base
 from app.models.amenities import room_amenities
@@ -31,3 +31,6 @@ class Room(Base):
     amenities: Mapped[list[Amenity]] = relationship(
         secondary=room_amenities, back_populates="rooms"
     )
+
+    # populated via with_expression() in RoomRepository.list_available
+    quantity_left: Mapped[int] = query_expression()

@@ -15,12 +15,12 @@ def available_rooms_stmt(
     """Rooms with at least one unit free in [date_from, date_to).
 
     Outer-joins non-cancelled bookings overlapping the date range and
-    keeps rooms where quantity > booked count. Selects (Room, quantity_left).
+    keeps rooms where quantity > booked count.
     """
     booked_count = func.count(Booking.id)
 
     stmt = (
-        select(Room, (Room.quantity - booked_count).label("quantity_left"))
+        select(Room)
         .outerjoin(
             Booking,
             (Booking.room_id == Room.id)

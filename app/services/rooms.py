@@ -9,11 +9,7 @@ from app.exceptions import (
 from app.models.amenities import Amenity
 from app.models.rooms import Room
 from app.schemas.filters import DateRangeParams
-from app.schemas.rooms import (
-    RoomCreate,
-    RoomReadAvailable,
-    RoomUpdate,
-)
+from app.schemas.rooms import RoomCreate, RoomUpdate
 from app.services.base import BaseService
 
 
@@ -26,17 +22,13 @@ class RoomService(BaseService):
         self,
         hotel_id: int,
         dates: DateRangeParams,
-    ) -> list[RoomReadAvailable]:
+    ) -> list[Room]:
         await self._check_hotel_exists(hotel_id)
-        rows = await self.db.rooms.list_available(
+        return await self.db.rooms.list_available(
             hotel_id=hotel_id,
             date_from=dates.date_from,
             date_to=dates.date_to,
         )
-        return [
-            RoomReadAvailable.from_row(room, quantity_left)
-            for room, quantity_left in rows
-        ]
 
     async def _resolve_amenities(self, amenities_ids: list[int]) -> list[Amenity]:
         if not amenities_ids:
