@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, Response, status
+from fastapi import APIRouter, Body, Depends, status
 
 from app.dependencies import HotelFilterDep, HotelServiceDep, get_current_admin
 from app.schemas.hotels import (
@@ -57,4 +57,3 @@ async def update_hotel(hotel_id: int, payload: HotelUpdate, service: HotelServic
 )
 async def delete_hotel(hotel_id: int, service: HotelServiceDep):
     await service.delete_hotel(hotel_id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)

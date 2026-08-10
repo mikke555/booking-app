@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, status
 
 from app.dependencies import AmenityServiceDep, get_current_admin
 from app.schemas.amenities import AmenityCreate, AmenityRead
@@ -44,4 +44,3 @@ async def update_amenity(
 )
 async def delete_amenity(amenity_id: int, service: AmenityServiceDep):
     await service.delete_amenity(amenity_id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)

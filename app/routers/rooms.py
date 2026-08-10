@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, Response, status
+from fastapi import APIRouter, Body, Depends, status
 
 from app.dependencies import DateRangeDep, RoomServiceDep, get_current_admin
 from app.schemas.rooms import (
@@ -58,4 +58,3 @@ async def update_room(room_id: int, payload: RoomUpdate, service: RoomServiceDep
 )
 async def delete_room(room_id: int, service: RoomServiceDep):
     await service.delete_room(room_id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
