@@ -4,6 +4,7 @@ from sqlalchemy import CheckConstraint, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
+from app.models.amenities import room_amenities
 
 if TYPE_CHECKING:
     from app.models.amenities import Amenity
@@ -28,5 +29,5 @@ class Room(Base):
     )
 
     amenities: Mapped[list[Amenity]] = relationship(
-        secondary="room_amenities", back_populates="rooms"
+        secondary=room_amenities, back_populates="rooms"
     )
