@@ -33,4 +33,4 @@ class Room(Base):
     )
 
     # populated via with_expression() in RoomRepository.list_available
-    quantity_left: Mapped[int] = query_expression()
+    quantity_left: Mapped[int] = query_expression()  # pyright: ignore[reportAssignmentType]
