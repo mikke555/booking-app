@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+from asyncpg.exceptions import InvalidCatalogNameError
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
@@ -26,9 +27,16 @@ def guard():
 
 @pytest.fixture(scope="session")
 async def setup_db(guard):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+    except InvalidCatalogNameError:
+        pytest.exit(
+            f"Database '{settings.postgres_db}' doesn't exist. "
+            f"Run: docker compose exec db createdb -U postgres {settings.postgres_db}",
+            returncode=1,
+        )
 
     yield
 
