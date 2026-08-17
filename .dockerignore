@@ -1,9 +1,15 @@
 .venv/
 .git/
 .env
+.env.test
+
 __pycache__/
 *.pyc
 .ruff_cache/
+.pytest_cache/
+
+tests/
+
 .dockerignore
 Dockerfile
 docker-compose.yml
