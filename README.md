@@ -1,5 +1,7 @@
 # Hotel Booking API
 
+[![CI](https://github.com/mikke555/booking-app/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mikke555/booking-app/actions/workflows/ci.yml)
+
 REST API for hotel booking: availability search by date range, concurrency-safe booking creation, JWT authentication.
 
 Built with FastAPI, SQLAlchemy 2, PostgreSQL, and Alembic.
