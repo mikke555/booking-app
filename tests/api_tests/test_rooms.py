@@ -104,6 +104,21 @@ async def test_patch_room(client, admin_headers, room):
     assert resp.json()["price"] == 150
 
 
+async def test_clear_room_amenities(client, admin_headers, room, amenity):
+    resp = await client.patch(
+        f"/rooms/{room.id}", headers=admin_headers, json={"amenities_ids": [amenity.id]}
+    )
+    assert resp.status_code == 200
+
+    resp = await client.patch(
+        f"/rooms/{room.id}", headers=admin_headers, json={"amenities_ids": []}
+    )
+    assert resp.status_code == 200
+
+    follow_up = await client.get(f"/rooms/{room.id}")
+    assert follow_up.json()["amenities"] == []
+
+
 async def test_delete_room(client, admin_headers, room):
     resp = await client.delete(f"/rooms/{room.id}", headers=admin_headers)
     assert resp.status_code == 204

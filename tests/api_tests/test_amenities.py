@@ -36,6 +36,16 @@ async def test_get_amenity_not_found(client):
     assert resp.status_code == 404
 
 
+async def test_update_amenity_duplicate(client, admin_headers, amenity, db):
+    other = await db.amenities.add(name="Pool")
+    await db.commit()
+
+    resp = await client.put(
+        f"/amenities/{other.id}", headers=admin_headers, json={"name": amenity.name}
+    )
+    assert resp.status_code == 409
+
+
 async def test_update_amenity(client, admin_headers, amenity):
     resp = await client.put(
         f"/amenities/{amenity.id}", headers=admin_headers, json={"name": "Wi-Fi 6"}

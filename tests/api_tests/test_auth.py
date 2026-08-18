@@ -1,3 +1,4 @@
+from app.utils.security import create_access_token
 from tests.const import PASSWORD, PASSWORD_HASH
 
 
@@ -64,4 +65,10 @@ async def test_invalid_token_rejected(client):
     resp = await client.get(
         "/bookings/me", headers={"Authorization": "Bearer not-a-jwt"}
     )
+    assert resp.status_code == 401
+
+
+async def test_token_for_nonexistent_user(client):
+    headers = {"Authorization": f"Bearer {create_access_token(9999)}"}
+    resp = await client.get("/users/me", headers=headers)
     assert resp.status_code == 401

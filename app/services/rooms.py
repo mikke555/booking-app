@@ -31,9 +31,6 @@ class RoomService(BaseService):
         )
 
     async def _resolve_amenities(self, amenities_ids: list[int]) -> list[Amenity]:
-        if not amenities_ids:
-            return []
-
         amenities = await self.db.amenities.list_by_ids(amenities_ids)
         missing = set(amenities_ids) - set(a.id for a in amenities)
         if missing:
