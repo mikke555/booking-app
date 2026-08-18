@@ -64,6 +64,14 @@ Run the tests:
 uv run pytest
 ```
 
+Run the tests under coverage, then print the report:
+
+```bash
+uv run coverage run -m pytest
+uv run coverage report
+uv run coverage html    # htmlcov/index.html
+```
+
 ## Development
 
 Format, lint, and type-check:
