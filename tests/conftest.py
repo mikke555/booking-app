@@ -33,8 +33,7 @@ async def setup_db(guard):
             await conn.run_sync(Base.metadata.create_all)
     except InvalidCatalogNameError:
         pytest.exit(
-            f"Database '{settings.postgres_db}' doesn't exist. "
-            f"Run: docker compose exec db createdb -U postgres {settings.postgres_db}",
+            f"Database '{settings.postgres_db}' doesn't exist",
             returncode=1,
         )
 

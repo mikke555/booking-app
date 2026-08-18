@@ -37,6 +37,12 @@ Seed the database with demo data (optional):
 docker compose run --rm app python -m scripts.seed
 ```
 
+Rebuild the app image after code or dependency changes:
+
+```bash
+docker compose up -d --build
+```
+
 ## Run locally
 
 ```bash
@@ -49,14 +55,7 @@ uv run fastapi dev             # run with auto-reload
 
 ## Testing
 
-Tests run against a separate `booking_test` database, configured via `.env.test`.
-
-Create the test database once, before the first run or after `docker compose down -v`:
-
-```bash
-docker compose exec db createdb -U postgres booking_test
-docker compose exec db psql -U postgres -l    # verify it exists
-```
+Tests run against a separate `booking_test` database, configured via `.env.test`. The database is created automatically by an init script in `docker/initdb/` when the Postgres data volume is first initialized.
 
 Run the tests:
 
@@ -90,12 +89,6 @@ uv run alembic upgrade head
 
 uv run alembic downgrade -1
 uv run alembic downgrade base
-```
-
-Rebuild the app image after code or dependency changes:
-
-```bash
-docker compose up -d --build
 ```
 
 Check the database container, open a psql shell, or stop everything and wipe the data:
